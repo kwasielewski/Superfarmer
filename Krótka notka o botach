@@ -1,0 +1,19 @@
+Jakie mają być boty?
+
+Jednym z założeń projektu (obok ćwiczenia umiejętności programistycznych i kooperacyjnych) jest przeanalizowanie popularnych strategii w grze Superfarmer. Ponieważ zajmujemy się strategiami typowymi dla graczy casualowych to implementujemy boty bez użycia zaawansowanego aparatu matematycznego. (heury)
+
+Jakiego typu?
+-królikowy - koncentruje się na posiadaniu królików, ponieważ łatwo zauważyć, że żetony tych zwierząt uzyskuje się najłatwiej
+-randomizowany - poddejmuje decyzje losowo
+-zrównoważony - ma za zadanie utrzymywanie struktury farmy w postaci piramidy
+-świński - próbuje jak najszybciej rozbudować swoją trzodę chlewną, ponieważ liczy na to, że obserwacja jakoby świnie oferowały najlepszy stosunek wartości żetonów do przyrostu, jest prawdziwa
+
+Jak mają się komunikować?
+-na wejściu stan gry w postaci structa ze stanem gry 5 tablic po 7 elementów (4 graczy i bank po 5 zwierząt hodowlanych i dwa rodzaje psów)
+-na wyjściu: zmienna int oznaczająca (1bit -wymiana/koniec tury)/(3b -cel wymiany)/(4b-liczba wymian)/(3b-zwierzę do sprzedania)/(3b-zwierzę do kupienia) -> łączbnie kod 14 bitowy
+
+
+Znane problemy?
+-żądanie awykonalnego
+-niekończona pętla decyzyjna (chcę kupić owcę, a za chwilę ją sprzedać)
+
