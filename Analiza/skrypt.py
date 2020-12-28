@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import math
 
 plotActive = False
 
@@ -28,11 +29,12 @@ def winnerGraph():
     df.plot(kind='line', x='LP', y=WH, color='brown', ax=ax)
 
     plt.show()
-    
+
 
 config = pd.read_csv(r'./config.csv')
 
 wins = np.zeros(config.iloc[0]['Types'])
+avrTimeToWin = np.zeros(config.iloc[0]['Types'])
 #print(config.iloc[0]['Types'])
 #print(wins)
 
@@ -56,6 +58,7 @@ for n in range(config.iloc[0]['N']):
             w_id = num+1
             T  = 'T' + str(num+1)
             wins[int(df.iloc[0][T])]+=1
+            avrTimeToWin[int(df.iloc[0][T])]+=df.iloc[-1]['LP']
             break
 
     if w_id == 0:
@@ -71,4 +74,11 @@ for n in range(config.iloc[0]['N']):
     #print(n)
     winnerGraph()
 
+for n in range(config.iloc[0]['Types']):
+    if wins[n]==0:
+        avrTimeToWin[n]=math.inf
+    else:
+        avrTimeToWin[n]=avrTimeToWin[n]/wins[n]
+    
 print(wins)
+print(avrTimeToWin)
