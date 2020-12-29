@@ -30,17 +30,54 @@ def winnerGraph():
 
     plt.show()
 
+def avrGraph():
+    if plotActive==False:
+        return
+    for i in range(typesCount):
+        ax = plt.gca()
+        
+        avrDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax)
+        avrDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax)
+        avrDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax)
+        avrDF.plot(kind='line',  y=5*i+3, color='black', ax=ax)
+        avrDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax)
+        plt.show()
+
+def avrWinGraph():
+    #if plotActive==False:
+    #    return
+    for i in range(typesCount):
+        ax = plt.gca()
+        
+        avrWinDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax)
+        avrWinDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax)
+        avrWinDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax)
+        avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax)
+        avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax)
+        plt.show()
+
 
 config = pd.read_csv(r'./config.csv')
 
-wins = np.zeros(config.iloc[0]['Types'])
-avrTimeToWin = np.zeros(config.iloc[0]['Types'])
+typesCount = config.iloc[0]['Types']
+numOfGames = config.iloc[0]['N']
+
+maxLenOfGame = 0
+minLenOfGame = math.inf
+columnNames =np.array(['R','S','P','C', 'H'])
+
+wins = np.zeros(typesCount)
+avrTimeToWin = np.zeros(typesCount)
+
 #print(config.iloc[0]['Types'])
 #print(wins)
 
-for n in range(config.iloc[0]['N']):
+
+
+
+for n in range(numOfGames):
     #print(n)
-    path = './dane'+str(n+1)+'.csv'
+    path = './Dane/dane'+str(n+1)+'.csv'
     df = pd.read_csv(path)
     #print(df)
 
@@ -52,7 +89,8 @@ for n in range(config.iloc[0]['N']):
     #wybór wygranego
 
     w_id = 0;
-
+    maxLenOfGame = max(maxLenOfGame, df.iloc[-1]['LP'])
+    minLenOfGame= min(minLenOfGame, df.iloc[-1]['LP'])
     for num in range(4):
         if won(num+1):
             w_id = num+1
@@ -64,21 +102,72 @@ for n in range(config.iloc[0]['N']):
     if w_id == 0:
         print("Rozgrywka bez zwycięzcy")
 
-    WR = 'R' + str(w_id);
-    WS = 'S' + str(w_id);
-    WP = 'P' + str(w_id);
-    WC = 'C' + str(w_id);
-    WH = 'H' + str(w_id);
-
-    #print(df[WR])
-    #print(n)
     winnerGraph()
+    
 
-for n in range(config.iloc[0]['Types']):
+
+
+for n in range(typesCount):
     if wins[n]==0:
         avrTimeToWin[n]=math.inf
     else:
         avrTimeToWin[n]=avrTimeToWin[n]/wins[n]
-    
+
+print("Max game lenght: ", maxLenOfGame)
 print(wins)
 print(avrTimeToWin)
+
+avrDF = pd.DataFrame(0.0, index=range(int(minLenOfGame)), columns=range(5*typesCount))
+
+for game in range(numOfGames):
+    path = './Dane/dane'+str(game+1)+'.csv'
+    df = pd.read_csv(path)
+    for n in range(int(minLenOfGame)):#int(df.iloc[-1]['LP'])):
+        #avrDF[0][n] = n+1
+        for m in range(20):
+            botType = 'T' + str(int(m/5)+1)
+            op = columnNames[m%5]+ str(int(df.iloc[0][botType])+1)
+            #print(df.iloc[n][op])
+            avrDF[m][n]+=df.iloc[n][op]
+
+for n in range(1, int(minLenOfGame)):
+    for m in range(20):
+        avrDF[m][n]=float(avrDF[m][n]/numOfGames)
+
+
+
+#wypisanie średniego przebiegu rozgrywki
+
+print(avrDF)
+avrGraph()
+
+avrWinDF = pd.DataFrame(0.0, index = range(int(minLenOfGame)), columns=range(5*typesCount))
+
+for game in range(numOfGames):
+    #print(n)
+    path = './Dane/dane'+str(game+1)+'.csv'
+    df = pd.read_csv(path)
+
+    for num in range(4):
+        if won(num+1):
+            for n in range(int(minLenOfGame)):#int(df.iloc[-1]['LP'])):
+                #avrDF[0][n] = n+1
+                for m in range(20):
+                    botType = 'T' + str(int(m/5)+1)
+                    op = columnNames[m%5]+ str(int(df.iloc[0][botType])+1)
+                    #print(df.iloc[n][op])
+                    avrWinDF[m][n]+=df.iloc[n][op]
+            break
+        
+
+for n in range(1, int(minLenOfGame)):
+    for m in range(20):
+        if(wins[int(m/5)]==0):
+            avrWinDF[m][n]=0
+        else:
+            avrWinDF[m][n]=float(avrWinDF[m][n]/wins[int(m/5)])
+
+print(avrWinDF)
+avrWinGraph()
+
+
