@@ -1,59 +1,46 @@
-# Created by https://www.toptal.com/developers/gitignore/api/c,python,latex
-# Edit at https://www.toptal.com/developers/gitignore?templates=c,python,latex
 
-### C ###
+# Created by https://www.toptal.com/developers/gitignore/api/latex,python,c++
+# Edit at https://www.toptal.com/developers/gitignore?templates=latex,python,c++
+
+### C++ ###
 # Prerequisites
 *.d
 
-# Object files
+# Compiled Object files
+*.slo
+*.lo
 *.o
-*.ko
 *.obj
-*.elf
-
-# Linker output
-*.ilk
-*.map
-*.exp
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
+# Linker files
+*.ilk
 
-# Shared objects (inc. Windows DLLs)
-*.dll
+# Debugger Files
+*.pdb
+
+# Compiled Dynamic libraries
 *.so
-*.so.*
 *.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
 
 # Executables
 *.exe
 *.out
 *.app
-*.i*86
-*.x86_64
-*.hex
-
-# Debug files
-*.dSYM/
-*.su
-*.idb
-*.pdb
-
-# Kernel Module Compile Results
-*.mod*
-*.cmd
-.tmp_versions/
-modules.order
-Module.symvers
-Mkfile.old
-dkms.conf
 
 ### LaTeX ###
 ## Core latex/pdflatex auxiliary files:
@@ -483,4 +470,6 @@ dmypy.json
 # profiling data
 .prof
 
-# End of https://www.toptal.com/developers/gitignore/api/c,python,latex
+# End of https://www.toptal.com/developers/gitignore/api/latex,python,c++
+
+
