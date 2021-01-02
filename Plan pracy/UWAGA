@@ -1,0 +1,8 @@
+Pozwoliłem sobie doczytać instrukcję i wnioski są takie, że:
+-jest jedna wymiana na turę co oznacza że nie ma pętli nieskończonej w czasie pojedynczej tury (nie da się w kółko wymieniać królików na owcę, a po chwili owcy na króliki)
+-wilk nie może zjeść konia ani królików -> może to być ważne przy podejmowaniu decyzji
+-startujemy z jednym królikiem -> j.w.
+-nawet przy nawiedzeniu farmy przez lisa czy wilka zwierzęta się romnażają
+-wymiana następuje przed rzutem
+-faza wymiany polega na kupieniu jednego droższego zwierzęcia, lub wymianie droższego na dowolną poprawną kombinację tańszych
+

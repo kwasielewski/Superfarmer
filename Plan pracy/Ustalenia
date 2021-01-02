@@ -2,8 +2,11 @@ Założenia programu głównego:
 	-ma wykonywać rzuty kostkami, przekazywać informację o stanie gry do funkcji botów, sprawdzać poprawność żądań, komunikować ze sobą boty i gracza
 	-WAŻNE: program musi komunikować i przerywać grę, gdy bot podejmie awykonalną decyzję
 	-wywoływać w odpowiednim czasie funkcję wypisania planszy
-	-zapisywać przebieg gry do jakiejś tablicy po turach, a na koniec zapisać do pliku w formacie csv (zwykły txt tyle że zawartość jest oddzielana ',') w katalogu dopowiadającym wygranemu botowi; taka kolejność będzie najprawdopodobniej konieczna, ponieważ do przeanalizowania
+	-zapisywać przebieg gry do jakiejś tablicy po turach, a na koniec zapisać do pliku w formacie .csv (zwykły txt tyle że zawartość jest oddzielana ',') w katalogu dopowiadającym wygranemu botowi; taka kolejność będzie najprawdopodobniej konieczna, ponieważ do przeanalizowania
 rozgrywek będzie potrzebna informacja kto wygrał, jednakze istnieje szansa, że program analizujący będzie mógł sprawdzać ostatnią linię
+
+edit do zapisu danych: nie trzeba zapisywać wyniku gry do osobnej linii
+
 	-
 
 
@@ -13,5 +16,7 @@ Generator liczb:
 	
 "Grafika":
 Najlepiej by było gdybyśmy ogarnęli SFMLa, jak się nie uda to kolorujemy tekst w terminalu. Ważne, żeby wybrać odpowiednie funckje systemowe do czyszczenia termianla, ponieważ są one różne w zależności od systemu operacyjnego
+
+edit do grafiki: skoro mieliśmy GTK to możemy użyć go z Gladem
 
 
