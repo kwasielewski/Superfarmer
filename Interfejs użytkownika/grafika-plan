@@ -1,0 +1,17 @@
+Co powinno znaleźć się w głównym oknie?
+ - instrukcja/jakieś menu
+ - ikonki różnych zwierząt (króliki, owce, świnie, krowy, konie, mały pies, duży pies, wilk, lis) wraz z ich liczbą u każdego z graczy
+ - awatary innych graczy
+ - przycisk do wymiany z bankiem (może wyświetlimy też kursy wymiany?)
+ - przycisk do "rzutu kostką" i wyświetlanie wyniku takiego rzutu
+ - ewentualnie informacja o końcu rozgrywki i o zwycięzcy
+
+Jakie zdarzenia musimy potem umieć obsłużyć?
+ - update liczby zwierząt w zależności od tego co wypadło na "kostce"
+ - zrealizowanie wymiany i update liczby zwierząt
+ - wyświetlenie błędu, jeżeli wymiana, której chcemy dokonać jest niemożliwa (za mało zwierząt danego gatunku na wymianę itp.)
+
+Dodatkowe uwagi:
+ - ...
+ - ...
+ - ...
