@@ -12,26 +12,28 @@ Znajdą się tu opisy nastêpujących okien:
     - przycisk do "rzutu kostką"
     - miejsce, gdzie wyświetli się wynik tego rzutu
  > okno pozwalające na wymianę z bankiem (stadem głównym)
-    - drop-down menu, które pozwala graczowi wybrać, jakie zwierzę chce nabyæ GTK_COMBO_BOX?
+    - drop-down menu, które pozwala graczowi wybrać, jakie zwierzę chce nabyć GTK_COMBO_BOX?
     - przycisk do zatwierdzenia wyboru
- > ewentualny pop-up z informacją o błędzie (czy da się ustawić czerwone tłó?)
+ > ewentualny pop-up z informacją o błędzie (czy da się ustawić czerwone tło?)
     - jeśli gracz zechce dokonać wymiany po rzucie kostką (niezgodne z zasadami)
     - gracz ma niewystaczającą liczbę zwierząt na wymianę
-    - informacja o koñcu gry (i kto wygrał rozgrywkę)
+    - informacja o końcu gry (i kto wygrał rozgrywkę)
 */
 
 void Dokonaj_Wymiany()
 {
-    ///trzeba dołożyć u góry pole tekstowe "Jakie zwierzę chcesz nabyć?" czy coś takiego
     GtkWidget *okno_wymiana = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(okno_wymiana), "Wymiana");
     gtk_window_set_position(GTK_WINDOW(okno_wymiana), GTK_WIN_POS_CENTER);
     gtk_container_set_border_width(GTK_CONTAINER(okno_wymiana), 30);
-    g_signal_connect(G_OBJECT(okno_wymiana), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    g_signal_connect(G_OBJECT(okno_wymiana), "destroy", G_CALLBACK(gtk_widget_destroy), okno_wymiana);
 
     GtkWidget *menu;
-    menu = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_container_set_border_width (GTK_CONTAINER (menu), 30);
+
+    GtkWidget *wymiana_tekst = gtk_label_new("Jakie zwierzę chcesz nabyć?");
+    gtk_container_add(GTK_CONTAINER(menu), wymiana_tekst);
 
     GtkWidget *wybierz_zwierze = gtk_combo_box_text_new();
     const char *zwierzeta[] = {"Wybierz zwierzę", "królik", "owca", "świnia", "krowa", "koń", "mały pies", "duży pies"};
@@ -43,7 +45,9 @@ void Dokonaj_Wymiany()
     gtk_container_add(GTK_CONTAINER(menu), przycisk_zatwierdz);
     //g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), NULL);
 
-    ///może dołożyć przycisk "Anuluj", którego naciśnięcie zamykałoby okno?
+    GtkWidget *przycisk_anuluj = gtk_button_new_with_label("Anuluj");
+    gtk_container_add(GTK_CONTAINER(menu), przycisk_anuluj);
+    g_signal_connect (G_OBJECT(przycisk_anuluj), "clicked", G_CALLBACK(gtk_widget_destroy), okno_wymiana);
 
     gtk_container_add(GTK_CONTAINER(okno_wymiana), menu);
     gtk_widget_show_all(okno_wymiana);
@@ -57,12 +61,6 @@ void Wymiana_Zatwierdzona()
 }
 
 void Blad_Wymiana_Niemozliwa()
-{
-    ///połączyć z hostem gry
-    ///przycisk "Rozumiem", którego naciśnięcie zamyka okno błędu
-}
-
-void Blad_Wymiana_Za_Pozno()
 {
     ///połączyć z hostem gry
     ///przycisk "Rozumiem", którego naciśnięcie zamyka okno błędu
