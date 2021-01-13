@@ -69,13 +69,20 @@ int bot(int s[5][7], int id){
 		break;
 		}
 	case 1:{
-		if(s[id][0]>12){
-			//kup świnię za króliki
-			decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0);
-		}else if(s[id][0]>6 and s[id][1]> 1){
-			decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0);
-		}else if(s[id][1]>1){
-			decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0);
+		
+		if(s[bankID][0]< 20){
+			if(s[id][1]>1){
+				decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0);
+			}
+		}else {
+			if(s[id][0]>12){
+				//kup świnię za króliki
+				decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0);
+			}else if(s[id][0]>6 and s[id][1]> 1){
+				decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0);
+			}else if(s[id][1]>1){
+				decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0);
+			}
 		}
 		break;
 		}
@@ -109,14 +116,19 @@ int bot(int s[5][7], int id){
 		
 		break;
 		}
+	case 2:{
+		//mam świnię 
+		
+		//mało/dokupić owcę/kupić psa/kupić/krowę
+		
+		
+		
+	}
 	default:{
 		break;
     	}
     }
     	
-    //if(state == 0){
-        
-   // }
 
 
     return decision;
