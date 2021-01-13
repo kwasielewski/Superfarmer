@@ -195,6 +195,7 @@ int main(){
     return 0;
 }
 long long int possible(long long int decision){
+
     return decision;
 }
 
