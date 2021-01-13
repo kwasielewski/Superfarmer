@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog);
+long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]);
 
 long long int possible(long long int decision);
 
@@ -78,7 +78,7 @@ long long int bot(int s[5][7], int id){
         case 0:{
     		if(s[id][0]>6){
 		    //decision = strToDec("11000000110000000000000");
-		    decision = decisionMaker(1, 1, 0, 6, 0, 0, 0, 0, 0, 0);
+		    decision = decisionMaker(1, 1, 0, 6, 0, 0, 0, 0, 0, 0, s);
 		}else{
 		    decision = 0;
 		}
@@ -89,16 +89,16 @@ long long int bot(int s[5][7], int id){
 
             if(s[bankID][0]< 20){
                 if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0,s);
                 }
             }else {
                 if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0);
+                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
                 }
             }
             break;
@@ -122,13 +122,13 @@ long long int bot(int s[5][7], int id){
                 }
                 buy[notPresentID] = 1;
             }else{
-                decision = decisionMaker(1, 1, notPresentID-1,buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0);
+                decision = decisionMaker(1, 1, notPresentID-1,buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0 , s);
                 break;
             }
             x = notPresent ++;
             while(x < 5){
                 if(s[id][x] > 1){
-                    decision = decisionMaker(1, 0, x, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0);
+                    decision = decisionMaker(1, 0, x, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0, s);
                 }
             }
 
@@ -144,18 +144,18 @@ long long int bot(int s[5][7], int id){
 
             //kupowanie krowy
             if((s[id][2]>1 && s[id][1] > 4)){
-                decision = decisionMaker(1, 1, 3, 0, 4, 1, 0 ,0 ,0, 0);
+                decision = decisionMaker(1, 1, 3, 0, 4, 1, 0 ,0 ,0, 0, s);
             }else if(s[id][2] > 2 ){
-                decision = decisionMaker(1, 1, 3 ,0 ,0, 3, 0, 0, 0, 0);
+                decision = decisionMaker(1, 1, 3 ,0 ,0, 3, 0, 0, 0, 0, s);
             }   else{
                 //dokupienie świni
                 if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0);
+                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
                 }
 
             }
@@ -165,15 +165,27 @@ long long int bot(int s[5][7], int id){
             //mam już krowę - zachowanie praktycznie takie jak w case 2
             if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0);
+                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0);
+                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
             }
         }
         case 4:{
             //być może uzupełnij niewygrywające braki
+            decision = 0;
+            for(int i = 3 ; i> 0; i--){
+            	if(s[id][i]==0 && s[id][i+1]>1){
+                    int toBuy [5] = {0, 0, 0, 0, 0};
+                    toBuy[i] = 1*value[i+1]/value[i];
+            		decision = decisionMaker(1,0,i, toBuy[0], toBuy[1], toBuy[2],toBuy[3], toBuy[4], 0, 0, s);
+            		break;
+            	}
+
+            }
+
+
         }
         default:{
             break;
@@ -194,12 +206,61 @@ int main(){
 
     return 0;
 }
-long long int possible(long long int decision){
 
+
+
+long long int possible(long long int decision, int s[5][7]){
+    //jeśli pomijam to git
+
+    int code[10];
+    code[9]= decision%4;
+    decision/=4;
+
+    code[8]= decision%8;
+    decision/=8;
+
+    code[7]= decision%8;
+    decision/=8;
+
+    code[6]= decision%16;
+    decision/=16;
+
+    code[5]= decision%32;
+    decision/=32;
+
+    code[4]= decision%32;
+    decision/=32;
+
+    code[3]= decision%64;
+    decision/=64;
+
+    code[2]= decision%8;
+    decision/=8;
+
+    code[1]= decision%2;
+    decision/=2;
+
+    code[0]= decision;
+
+    if(code[0] == 0){
+        return 0;
+    }
+    //jeśli się nie da kupić bo nie ma to wyzeruj
+    if(code[1] == 1 && s[0][code[2]+1]==0){
+        return 0;
+    }
+    //jeśli się sprzedaje to wyzeruj
+    if(code[1] == 0 ){
+        for(int  i = 0; i < 7 ;i++){
+            if(code[3+i]>s[0][i]){
+                return 0;
+            }
+        }
+    }
     return decision;
 }
 
-long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog){
+long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]){
 	long long int output = 0;
 
 	output += exchange*2+buy;
@@ -222,11 +283,11 @@ long long int decisionMaker(int exchange, int buy, int big, int rabbit, int shee
 	output *= 8;
 	output += horse;
 
-	output *= 3;
+	output *= 8;
 	output += sDog;
 
-	output *= 2;
+	output *= 4;
 	output += bDog;
 
-	return possible(output);
+	return possible(output,  s);
 }
