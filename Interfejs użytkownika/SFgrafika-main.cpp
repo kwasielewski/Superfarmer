@@ -12,13 +12,22 @@ Znajdą się tu opisy nastêpujących okien:
     - przycisk do "rzutu kostką"
     - miejsce, gdzie wyświetli się wynik tego rzutu
  > okno pozwalające na wymianę z bankiem (stadem głównym)
+    - wybór kupno czy sprzedaż (może zaznaczanie ptaszkiem kwadracika?)
     - drop-down menu, które pozwala graczowi wybrać, jakie zwierzę chce nabyć GTK_COMBO_BOX?
+    - możliwość wyboru jakie dokładnie zwierzaki gracz chce wymienić
     - przycisk do zatwierdzenia wyboru
- > ewentualny pop-up z informacją o błędzie (czy da się ustawić czerwone tło?)
-    - jeśli gracz zechce dokonać wymiany po rzucie kostką (niezgodne z zasadami)
+    - przycisk do anulowania wymiany
+ > ewentualny pop-up z nformacją o błędzie (czy da się ustawić czerwone tło?)
     - gracz ma niewystaczającą liczbę zwierząt na wymianę
+    - gracz podał informacje, które nie pokrywają się z kursami wymiany
     - informacja o końcu gry (i kto wygrał rozgrywkę)
 */
+
+void Dokonaj_Wymiany();
+void Wymiana_Zatwierdzona();
+void Blad_Wymiana_Niemozliwa();
+void Rzut_Kostka();
+void Koniec_Gry();
 
 void Dokonaj_Wymiany()
 {
@@ -40,30 +49,55 @@ void Dokonaj_Wymiany()
     for (int i = 0; i < 8; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(wybierz_zwierze), zwierzeta[i]);
     gtk_combo_box_set_active(GTK_COMBO_BOX(wybierz_zwierze), 0);
     gtk_container_add(GTK_CONTAINER(menu), wybierz_zwierze);
+    ///jak uzyskać informację o tym, co wybrał użytkownik? gtk_combo_box_get_active?
 
     GtkWidget *przycisk_zatwierdz = gtk_button_new_with_label("Zatwierdź");
     gtk_container_add(GTK_CONTAINER(menu), przycisk_zatwierdz);
-    //g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), NULL);
+    g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), NULL); //wywołać z argumentem - wybrana opcja
 
     GtkWidget *przycisk_anuluj = gtk_button_new_with_label("Anuluj");
     gtk_container_add(GTK_CONTAINER(menu), przycisk_anuluj);
-    g_signal_connect (G_OBJECT(przycisk_anuluj), "clicked", G_CALLBACK(gtk_widget_destroy), okno_wymiana);
+    g_signal_connect_swapped(G_OBJECT(przycisk_anuluj), "clicked", G_CALLBACK(gtk_widget_destroy), okno_wymiana);
 
     gtk_container_add(GTK_CONTAINER(okno_wymiana), menu);
     gtk_widget_show_all(okno_wymiana);
 }
 
-void Wymiana_Zatwierdzona()
+void Wymiana_Zatwierdzona() //wybrane zwierzę jako argument
 {
     ///połączyć z hostem gry
     ///musi potem nastąpić update tabeli w glowny_wewnatrz
-    ///ta funkcja powinna automatycznie zamknąć okno "Wymiana"
+
+    bool czy_wymiana_mozliwa = false; //testowe wywołanie (do zmiany później)
+
+    if (czy_wymiana_mozliwa)
+    {
+        ///tutaj update
+        ///ta funkcja powinna automatycznie zamknąć okno "Wymiana"
+    }
+    else Blad_Wymiana_Niemozliwa();
 }
 
 void Blad_Wymiana_Niemozliwa()
 {
-    ///połączyć z hostem gry
-    ///przycisk "Rozumiem", którego naciśnięcie zamyka okno błędu
+    GtkWidget *okno_wymiana_niemozliwa = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(okno_wymiana_niemozliwa), "Ups!");
+    gtk_window_set_position(GTK_WINDOW(okno_wymiana_niemozliwa), GTK_WIN_POS_CENTER);
+    gtk_container_set_border_width(GTK_CONTAINER(okno_wymiana_niemozliwa), 30);
+    g_signal_connect(G_OBJECT(okno_wymiana_niemozliwa), "destroy", G_CALLBACK(gtk_widget_destroy), okno_wymiana_niemozliwa);
+
+    GtkWidget *own_wewnatrz = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_set_border_width (GTK_CONTAINER (own_wewnatrz), 30);
+    gtk_container_add(GTK_CONTAINER(okno_wymiana_niemozliwa), own_wewnatrz);
+
+    GtkWidget *own_tekst = gtk_label_new("Nie masz wystarczających środków na taką wymianę");
+    gtk_container_add(GTK_CONTAINER(own_wewnatrz), own_tekst);
+
+    GtkWidget *przycisk_rozumiem = gtk_button_new_with_label("Rozumiem");
+    gtk_container_add(GTK_CONTAINER(own_wewnatrz), przycisk_rozumiem);
+    g_signal_connect_swapped(G_OBJECT(przycisk_rozumiem), "clicked", G_CALLBACK(gtk_widget_destroy), okno_wymiana_niemozliwa);
+
+    gtk_widget_show_all(okno_wymiana_niemozliwa);
 }
 
 void Rzut_Kostka() //wskaźnik na tabelę/okno główne jako argument?
@@ -71,12 +105,35 @@ void Rzut_Kostka() //wskaźnik na tabelę/okno główne jako argument?
     ///połączyć z hostem gry i generatorem liczb losowych
     ///wyświetlić komunikat o wyniku losowania w oknie głównym
     ///musi potem nastąpić update tabeli w glowny_wewnatrz
+    ///stąd powinna też przyjść informacja o ewentualnym końcu rozgrywki (wywołanie void Koniec_Gry())
 }
 
 void Koniec_Gry()
 {
-    ///połączyć z hostem gry
-    ///przycisk "OK", którego naciśnięcie zamyka wszystkie okna
+    ///połączyć z hostem gry - wygrana czy przegrana?
+
+    bool czy_wygrales = false; //tylko testowa wartość, tutaj wywołać trzeba funkcję z hosta
+
+    GtkWidget *okno_koniec_gry = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(okno_koniec_gry), "Koniec gry");
+    gtk_window_set_position(GTK_WINDOW(okno_koniec_gry), GTK_WIN_POS_CENTER);
+    gtk_container_set_border_width(GTK_CONTAINER(okno_koniec_gry), 30);
+    g_signal_connect(G_OBJECT(okno_koniec_gry), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+
+    GtkWidget *okg_wewnatrz = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_set_border_width (GTK_CONTAINER (okg_wewnatrz), 30);
+    gtk_container_add(GTK_CONTAINER(okno_koniec_gry), okg_wewnatrz);
+
+    GtkWidget *info_o_wyniku = gtk_label_new(NULL);
+    if (czy_wygrales) gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Wygrałeś! Gratulacje!");
+    else gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Przegrałeś");
+    gtk_container_add(GTK_CONTAINER(okg_wewnatrz), info_o_wyniku);
+
+    GtkWidget *przycisk_ok = gtk_button_new_with_label("OK");
+    gtk_container_add(GTK_CONTAINER(okg_wewnatrz), przycisk_ok);
+    g_signal_connect_swapped(G_OBJECT(przycisk_ok), "clicked", G_CALLBACK(gtk_widget_destroy), okno_koniec_gry);
+
+    gtk_widget_show_all(okno_koniec_gry);
 }
 
 int main(int argc, char *argv[])
@@ -127,10 +184,9 @@ int main(int argc, char *argv[])
 
     GtkWidget *przycisk_rzut = gtk_button_new_with_label("Rzut kostką");
     gtk_container_add(GTK_CONTAINER(glowny_wewnatrz), przycisk_rzut);
-    //g_signal_connect (G_OBJECT(przycisk_rzut), "clicked", G_CALLBACK(Rzut_Kostka), NULL);
+    //g_signal_connect (G_OBJECT(przycisk_rzut), "clicked", G_CALLBACK(Rzut_Kostka), NULL); //tablica jako argument
     gtk_container_add(GTK_CONTAINER(glowny), glowny_wewnatrz);
 
     gtk_widget_show_all(glowny);
     gtk_main();
 }
-
