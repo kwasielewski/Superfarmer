@@ -44,8 +44,8 @@ def avrGraph():
         plt.show()
 
 def avrWinGraph():
-    #if plotActive==False:
-    #    return
+    if plotActive==False:
+        return
     for i in range(typesCount):
         ax = plt.gca()
         
@@ -55,6 +55,15 @@ def avrWinGraph():
         avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax)
         avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax)
         plt.show()
+
+def plotGameLength():
+    #if plotActive==False:
+    #    return
+    plt.plot(gameLength)
+    plt.ylabel('Liczba gier')
+    plt.xlabel('Liczba tur')
+    plt.show()
+    
 
 
 config = pd.read_csv(r'./config.csv')
@@ -170,4 +179,13 @@ for n in range(1, int(minLenOfGame)):
 print(avrWinDF)
 avrWinGraph()
 
+#maxGameLength
 
+gameLength = np.zeros(int(maxLenOfGame)+1)
+for game in range(numOfGames):
+    path = './Dane/dane'+str(game+1)+'.csv'
+    df = pd.read_csv(path)
+    gameLength[int(df.iloc[-1]['LP'])] += 1
+
+print(gameLength)
+plotGameLength()
