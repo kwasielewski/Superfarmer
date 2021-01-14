@@ -1,7 +1,8 @@
 #include<iostream>
 
-int main()
+int losowanko
 {
+  srand(time(NULL));
+  return rand();
 
- return 0;
 }
