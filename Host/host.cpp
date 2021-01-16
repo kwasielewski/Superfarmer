@@ -29,7 +29,19 @@ int* usadzGraczy(bool CzyCzlowiekGra)
   random_shuffle(Usadzenie, Usadzenie + 4);
   return Usadzenie;
 }
+int** inicjujStada()
+{
+  int **Stado = new int*[5];
+  for(int i = 0; i <= 4; i++)
+    Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
+  Stado[0][0] = 60; Stado[0][1] = 24; Stado[0][2] = 20; Stado[0][3] = 12; Stado[0][4] = 6; Stado[0][5] = 4; Stado[0][6] = 2;
+  for(int i = 1; i <= 3; i++)
+    for(int j = 0; j <= 6; j++)
+      Stado[i][j] = 0;
+  return Stado;
+}
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
-
+  int *Usadzenie = usadzGraczy(true);
+  int **Stado = inicjujStada();
 }
