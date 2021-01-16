@@ -8,21 +8,29 @@ long long int possible(long long int decision);
 
 long long int botkrolik(int s[5][7], int id)
 {
+   long long int decision=0;
     const int bank=0;
     int state=0;
     int zapas=0;
     while((s[bank][0]+(zapas+1))*2<=s[id][0])  //sprawdzamy, ile królików możemy wydać na wymianę tak, by miec szanse potem odzyskać wszystkie króliki obecne w banku
         zapas++;
 
+
+
+
+
+
+    for(int i=1;i<=4;i++)                //liczymy nadwyżkę zwierząt w "krolikojednostkach
+
     if(s[bank][0]*2>s[id][0])       //   skupiamy się na królikach
     {
-        if(s[id][0]<=6)
+        if(s[id][0]<=6)            // jeśli jesteśmy w początkowej fazie gry / stracilismy kroliki, chcemy je odzyskac sprzedajac inne zwierzeta
         {
 
         }
 
-        else         //zakończ turę i czekaj na rozmnozenie królików
-        }
+        else decisionMaker(0,0,0,0,0,0,0,0,0,0,s);    //zakończ turę i czekaj na rozmnozenie królików
+    }
     else                     // jest wystarczająco dużo królików, staramy się zbudować kompletny zestaw zwierząt
     {
 
@@ -34,12 +42,14 @@ long long int botkrolik(int s[5][7], int id)
               if(s[id][2]==0 && zapas>=12)
               {
               // kup świnię
+              decision=decisionMaker(1,1,2,12,0,0,0,0,0,0,s);
               }
               else {
 
                if(s[id][1]==0 && zapas>=6)
                 {
                     //kup owcę
+                    decision=decisionMaker(1,1,1,6,0,0,0,0,0,0,s);
                 }
 
                 else{
@@ -62,10 +72,12 @@ long long int botkrolik(int s[5][7], int id)
 
 
         }
-        else // zakończ turę
+        else decision=decisionMaker=(0,0,0,0,0,0,0,0,0,0,s); //zakończ turę
 
 
         }
+
+    return decision;
 }
 
 
