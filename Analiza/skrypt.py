@@ -81,7 +81,7 @@ avrTimeToWin = np.zeros(typesCount)
 #print(config.iloc[0]['Types'])
 #print(wins)
 
-
+noWinner = 0
 
 
 for n in range(numOfGames):
@@ -109,11 +109,12 @@ for n in range(numOfGames):
             break
 
     if w_id == 0:
+        noWinner += 1
         print("Rozgrywka bez zwycięzcy")
 
     winnerGraph()
     
-
+print("Rozgrywek bez zwycięzcy łącznie: "noWinner)
 
 
 for n in range(typesCount):
