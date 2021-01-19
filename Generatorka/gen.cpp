@@ -1,8 +1,10 @@
 #include<iostream>
+#include<stdlib.h>
+#include<time.h>
 
-int losowanko
+
+int losowanko()
 {
-  srand(time(NULL));
+  srand( time(NULL) );
   return rand();
-
 }
