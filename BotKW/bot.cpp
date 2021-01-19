@@ -1,3 +1,4 @@
+//jest bład w possible + prawdopodobnie nadpisywana jest decyzja
 #include <iostream>
 using namespace std;
 
@@ -7,7 +8,7 @@ long long int possible(long long int decision);
 
 
 long long int bot(int s[5][7], int id){
-	int debug = 1;
+	int debug = 0;
 	int bankID = 0;
     long long int decision=0;
     int value[] ={1, 6, 12, 36, 72};
@@ -202,8 +203,14 @@ long long int bot(int s[5][7], int id){
 int main(){
     int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {100, 100, 100, 100, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
-    cout << bot(tab, 1);
-
+    cout <<"Jeden "<< bot(tab, 1) << endl;
+	for(int i  = 0;  i <7; i++){
+		tab[1][i] = 0;
+	}
+	tab[1][0]= 7;
+	cout <<"Dwa " << bot(tab, 1)<<endl;
+	tab[1][0] = 15;
+	cout <<"Trzy "<< bot(tab,1) <<endl;
     return 0;
 }
 
@@ -261,6 +268,7 @@ long long int possible(long long int decision, int s[5][7]){
 }
 
 long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]){
+	cout << "Ex: " << exchange << " Buy: " << buy << " Big: " << big << " Num: " << rabbit << " " << sheep << " " << pig << " " << cow << " "  <<  horse << " " << sDog << " " << bDog <<endl; 
 	long long int output = 0;
 
 	output += exchange*2+buy;
@@ -289,5 +297,5 @@ long long int decisionMaker(int exchange, int buy, int big, int rabbit, int shee
 	output *= 4;
 	output += bDog;
 
-	return possible(output,  s);
+	return output;//possible(output,  s);
 }
