@@ -1,4 +1,3 @@
-//jest bład w possible + prawdopodobnie nadpisywana jest decyzja
 #include <iostream>
 using namespace std;
 
@@ -47,12 +46,12 @@ long long int bot(int s[5][7], int id){
     		state = 10;
     	}
 
-    }else if(presence&8==8){
-
+    }else if((presence&8)==8){
+		cout << "wynik " << (presence&8) << endl; 
     	state = 3;
-    }else if(presence&4==4){
+    }else if((presence&4)==4){
     	state = 2;
-    }else if(presence&2 == 2){
+    }else if((presence&2) == 2){
     	state = 1;
     }else if(presence <2){
         state = 0;
@@ -70,7 +69,8 @@ long long int bot(int s[5][7], int id){
     if(debug) cout << (presence&2) << endl;
 
 
-	if(debug)cout << presence << " " <<state <<"/";
+	//cout << "Obecne "<<presence << " Stan " <<state <<"\n";
+	//cout << "Stan " << state << endl;
     //co robić w danym stadium
     if(state < -1){
         cout << "Nieokreślono stanu gry\n";
@@ -79,11 +79,13 @@ long long int bot(int s[5][7], int id){
         case 0:{
     		if(s[id][0]>6){
 		    //decision = strToDec("11000000110000000000000");
+		    //cout << "Powinienem tu być\n";
 		    decision = decisionMaker(1, 1, 0, 6, 0, 0, 0, 0, 0, 0, s);
-		}else{
-		    decision = 0;
-		}
-		break;
+			}else{
+
+				decision = 0;
+			}
+			break;
 		}
 
         case 1:{
@@ -97,6 +99,7 @@ long long int bot(int s[5][7], int id){
                     //kup świnię za króliki
                     decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
+
                     decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
                     decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
@@ -179,7 +182,7 @@ long long int bot(int s[5][7], int id){
             for(int i = 3 ; i> 0; i--){
             	if(s[id][i]==0 && s[id][i+1]>1){
                     int toBuy [5] = {0, 0, 0, 0, 0};
-                    toBuy[i] = 1*value[i+1]/value[i];
+                    toBuy[i] = 1*value[i+1]/value[i]; ///?
             		decision = decisionMaker(1,0,i, toBuy[0], toBuy[1], toBuy[2],toBuy[3], toBuy[4], 0, 0, s);
             		break;
             	}
@@ -248,7 +251,11 @@ long long int possible(long long int decision, int s[5][7]){
     decision/=2;
 
     code[0]= decision;
-
+    /*cout << "Odzyskany kod ";
+	for(int i = 0; i< 10; i ++){
+		cout << code[i] << " ";
+	}	
+	cout << endl;*/
     if(code[0] == 0){
         return 0;
     }
@@ -297,5 +304,5 @@ long long int decisionMaker(int exchange, int buy, int big, int rabbit, int shee
 	output *= 4;
 	output += bDog;
 
-	return output;//possible(output,  s);
+	return possible(output,  s) ? output : 0;
 }
