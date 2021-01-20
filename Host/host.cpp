@@ -10,17 +10,27 @@ using namespace std;
 #include "bot4.h"
 #include "randomize.h"*/
 //Boty z załączanych plików nagłówkowych
-extern int krolikowy(const int tab[5][7], int id);
-extern int randomizowany(const int tab[5][7], int id);
-extern int usainbolt(const int tab[5][7], int id);
-extern int swinski(const int tab[5][7], int id);
-extern int dokonajWymiany(const int tab[5][7], int id);
+extern int krolikowy(const int Stado[5][7], int id);
+extern int randomizowany(const int Stado[5][7], int id);
+extern int usainbolt(const int Stado[5][7], int id);
+extern int swinski(const int Stado[5][7], int id);
+extern int dokonajWymiany(const int Stado[5][7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
+extern void zakonczGre(); //funkcja wyświetlająca komunikat o końcu rozgrywki w GTK
+extern void wymianaZatwierdzona(const int Stado[5][7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
+extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
 typedef pair<int, int> PII;
 int (*bots[4])(const int[5][7], int); //wskaźniki na boty
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
   srand(getpid() + time(NULL));
   return rand();
+}
+static bool czyKoniecGry(int Stado[5][7], int gracz)
+{
+  for(int j = 0; j <= 4; j++)
+    if(Stado[gracz][j] == 0)
+      return false;
+  return true;
 }
 static int* usadzGraczy(bool CzyCzlowiekGra)
 {
@@ -70,8 +80,12 @@ static int** inicjujStada()
 }
 bool rozpocznijGre(int Usadzenie[4], int Stado[5][7])
 {
-  //Construction site
+  while(true){
+    //during construction
+  }
+  zakonczGre();
 }
+int tab[5][7];
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
   int *Usadzenie = usadzGraczy(true);
