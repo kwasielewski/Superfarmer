@@ -10,36 +10,59 @@ long long int botkrolik(int s[5][7], int id)
 {
    long long int decision=0;
     const int bank=0;
-    int state=0;
     int zapas=0;
+    int portfel=0;
+    bool closewin=1;
     while((s[bank][0]+(zapas+1))*2<=s[id][0])  //sprawdzamy, ile królików możemy wydać na wymianę tak, by miec szanse potem odzyskać wszystkie króliki obecne w banku
         zapas++;
 
+    int mnożnik=1;
+    for(int i=0;i<=3;i++)   //liczymy nadwyżkę zwierząt w "krolikojednostkach"
+    {
+        if (s[id][i]==0)
+           {
+           closewin=0;
+           break;
+           }
+       if(i==1)
+       mnożnik=6;
+       else if (i==2)
+       mnoznik=12;
+       else if (i==3)
+       mnoznik=36;
+
+       portfel+=(s[id][i]-1)*mnoznik;
+    }
 
 
-
-
-
-    for(int i=1;i<=4;i++)                //liczymy nadwyżkę zwierząt w "krolikojednostkach
 
     if(s[bank][0]*2>s[id][0])       //   skupiamy się na królikach
     {
         if(s[id][0]<=6)            // jeśli jesteśmy w początkowej fazie gry / stracilismy kroliki, chcemy je odzyskac sprzedajac inne zwierzeta
         {
-
+               // sprzedaj swinie
+               if(s[id][2]>0)
+               decision=decisionMaker(1,0,2,12,0,0,0,0,0,0,s);
+               else if(s[id][1]>0)//sprzedaj owce
+               decision=decisionMaker(1,0,1,12,0,0,0,0,0,0,s);
+               else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s);      //nic nie rób
         }
 
-        else decisionMaker(0,0,0,0,0,0,0,0,0,0,s);    //zakończ turę i czekaj na rozmnozenie królików
+        else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s);    //zakończ turę i czekaj na rozmnozenie królików
     }
     else                     // jest wystarczająco dużo królików, staramy się zbudować kompletny zestaw zwierząt
     {
 
-        ///   <<< sprawdzam czy mogę wygrać w jednym ruchu
+        portfel+=s[id][5]*6+s[id][6]*36;
+        if(closewin==1&&portfel>=72)    /////// moge wygrac w jednym ruchu czyli brakuje mi tylko konia
+        {
+          decision=decisionMaker(1,1,4,s[id][0]-1,s[id][1]-1,s[id][2]-1,s[id][3]-1,0,s[id][5],s[id][6],s);
+        }
 
         // nie mogę wygrać w jednym ruchu
-        if(nadwyzka>=6)
+        else if(portfel>=6)
         {
-              if(s[id][2]==0 && zapas>=12)
+              if(s[id][2]==0 && zapas>=12)                           ///do poprawki
               {
               // kup świnię
               decision=decisionMaker(1,1,2,12,0,0,0,0,0,0,s);
@@ -54,7 +77,17 @@ long long int botkrolik(int s[5][7], int id)
 
                 else{
 
-                    if(///mam dużo owiec i swin)
+                    if(s[id][1]==0||s[id][2]==0)
+                    portfel=0;
+                    else if(s[id][1]==1&&s[id][2]>1)
+                    portfel=(s[id][2]-1)*2;
+                    else if(s[id][1]>1&&s[id][2]==1)
+                    portfel=s[id][1]-1
+                    else portfel=(s[id][2]-1)*2+s[id][2]-1;
+
+
+
+                    if(portfel>=6) //mam dużo owiec i swin (przeliczam na owce)
                     {
                     ///kup krowę
                     }
