@@ -10,12 +10,20 @@ using namespace std;
 #include "bot4.h"
 #include "randomize.h"*/
 //Boty z załączanych plików nagłówkowych
-extern int krolikowy(const int Stado[5][7], int id);
+extern int krolikowy(const int Stado[5][7], int id)
 extern int randomizowany(const int Stado[5][7], int id);
 extern int usainbolt(const int Stado[5][7], int id);
 extern int swinski(const int Stado[5][7], int id);
+extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
 extern int dokonajWymiany(const int Stado[5][7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
-extern void zakonczGre(); //funkcja wyświetlająca komunikat o końcu rozgrywki w GTK
+void zakonczGre(int zwyciezca, int Usadzenie[4], int Stado[5][7]) //funkcja czyszcząca pamięć i wyświetlająca komunikat o końcu rozgrywki w GTK
+{
+  for(int i = 0; i < 5; i++)
+    delete[] Stado[i];
+  delete Stado;
+  delete Usadzenie;
+  Koniec_Gry(zwyciezca);
+}
 extern void wymianaZatwierdzona(const int Stado[5][7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
 typedef pair<int, int> PII;
@@ -80,10 +88,11 @@ static int** inicjujStada()
 }
 bool rozpocznijGre(int Usadzenie[4], int Stado[5][7])
 {
+  int zwyciezca = -1;
   while(true){
     //during construction
   }
-  zakonczGre();
+  zakonczGre(zwyciezca, Usadzenie, Stado);
 }
 int tab[5][7];
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
