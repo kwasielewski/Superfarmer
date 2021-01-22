@@ -91,9 +91,26 @@ long long int botkrolik(int s[5][7], int id)
 
                     if(portfel>=6) //mam dużo owiec i swin (przeliczam na owce)
                     {
+                          int swinia=0;
+                          int owca=0;
+                          while(s[id][2]>1&&(swinia+1)*2<=6)
+                                świnia++;
 
 
+                          if(świnia<3&&s[id][1]-1>=6-świnia*2)
+                          while(świnia*2+owca<6)
+                             owca++;
 
+                          else
+                          {
+                          if(swinia<3)
+                          świnia++;
+                          while(świnia*2+owca<6)
+                          owca++;
+                          };
+
+
+                          decisionMaker(1,1,3,0,owca,swinia,0,0,0,0,s);
                     }
                     else      //dokup swinie i owce
                     {
