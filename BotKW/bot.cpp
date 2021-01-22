@@ -35,12 +35,14 @@ long long int bot(int s[5][7], int id){
     4 - mam braki w łańcuchu
     10 - da się wygrać w 1 ruchu
     */
+    
     if(debug) cout << "Nie ma " << notPresent << " ID:" << notPresentID << endl;
     if(notPresent == 1){
     	int extra = 0;
     	for(int i = 0; i < 5; i ++){
     		extra += max(s[id][i]-1, 0)*value[i];
     	}
+    	
     	if(debug) cout << extra << endl;
     	if(extra >= value[notPresentID]&& s[bankID][notPresentID]>0){
     		state = 10;
@@ -56,12 +58,16 @@ long long int bot(int s[5][7], int id){
     }else if(presence <2){
         state = 0;
     }
-
-    for(int i  = 1 ; i < 5;  i++){
-        if(s[id][i-1]==0&&s[id][i]!=0){
-            state = 4;
-        }
+	if(state!=10){
+		for(int i  = 1 ; i < 5;  i++){
+		    if(s[id][i-1]==0&&s[id][i]!=0){
+		        state = 4;
+		    }
+		}
     }
+
+	
+    
 
 
     if(debug) cout << (presence&8) << endl;
@@ -75,6 +81,7 @@ long long int bot(int s[5][7], int id){
     if(state < -1){
         cout << "Nieokreślono stanu gry\n";
     }
+    
     switch(state){
         case 0:{
     		if(s[id][0]>6){
@@ -109,9 +116,11 @@ long long int bot(int s[5][7], int id){
             }
 
         case 10:{
+        	
             int currentValue = 0;
             int buy[] = {0, 0 , 0, 0, 0};
             int x = notPresentID;
+
             while(x>-1 && currentValue < value[notPresent]){
                 if(s[id][x]> 1){
                     buy[x] = s[id][x]-1;
@@ -120,6 +129,7 @@ long long int bot(int s[5][7], int id){
                     x--;
                 }
             }
+          
             if(currentValue< value[notPresent]){
                 for(int i = 0; i < 5; i++){
                     buy[i] = 0;
@@ -133,9 +143,12 @@ long long int bot(int s[5][7], int id){
             while(x < 5){
                 if(s[id][x] > 1){
                     decision = decisionMaker(1, 0, x, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0, s);
+                	break;
+                }else{
+                	x++;
                 }
             }
-
+ 
             break;
             }
 
@@ -204,7 +217,7 @@ long long int bot(int s[5][7], int id){
 
 
 int main(){
-    int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {100, 100, 100, 100, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
+    int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {1, 1, 1, 0, 2, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
     cout <<"Jeden "<< bot(tab, 1) << endl;
 	for(int i  = 0;  i <7; i++){
@@ -275,7 +288,7 @@ long long int possible(long long int decision, int s[5][7]){
 }
 
 long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]){
-	cout << "Ex: " << exchange << " Buy: " << buy << " Big: " << big << " Num: " << rabbit << " " << sheep << " " << pig << " " << cow << " "  <<  horse << " " << sDog << " " << bDog <<endl; 
+	//cout << "Ex: " << exchange << " Buy: " << buy << " Big: " << big << " Num: " << rabbit << " " << sheep << " " << pig << " " << cow << " "  <<  horse << " " << sDog << " " << bDog <<endl; 
 	long long int output = 0;
 
 	output += exchange*2+buy;
