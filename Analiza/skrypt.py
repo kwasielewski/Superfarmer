@@ -22,11 +22,11 @@ def winnerGraph():
     if plotActive == False:
         return
     ax = plt.gca()
-    df.plot(kind='line', x='LP', y=WR, color='orange', ax=ax)
-    df.plot(kind='line', x='LP', y=WS, color='blue', ax=ax)
-    df.plot(kind='line', x='LP', y=WP, color='pink', ax=ax)
-    df.plot(kind='line', x='LP', y=WC, color='black', ax=ax)
-    df.plot(kind='line', x='LP', y=WH, color='brown', ax=ax)
+    df.plot(kind='line', x='LP', y=WR, color='orange', ax=ax, label = 'Króliki')
+    df.plot(kind='line', x='LP', y=WS, color='blue', ax=ax, label = 'Owce')
+    df.plot(kind='line', x='LP', y=WP, color='pink', ax=ax, label = 'Świnie')
+    df.plot(kind='line', x='LP', y=WC, color='black', ax=ax, label = 'Krowy')
+    df.plot(kind='line', x='LP', y=WH, color='brown', ax=ax, label ='Konie')
 
     plt.show()
 
@@ -36,25 +36,34 @@ def avrGraph():
     for i in range(typesCount):
         ax = plt.gca()
         
-        avrDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax)
-        avrDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax)
-        avrDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax)
-        avrDF.plot(kind='line',  y=5*i+3, color='black', ax=ax)
-        avrDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax)
+        avrDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax, label = 'Króliki')
+        avrDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax, label = 'Owce')
+        avrDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
+        avrDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
+        avrDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
         plt.show()
 
 def avrWinGraph():
-    #if plotActive==False:
-    #    return
+    if plotActive==False:
+        return
     for i in range(typesCount):
         ax = plt.gca()
         
-        avrWinDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax)
-        avrWinDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax)
-        avrWinDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax)
-        avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax)
-        avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax)
+        avrWinDF.plot(kind='line',  y=5*i+0, color='orange', ax=ax, label = 'Króliki')
+        avrWinDF.plot(kind='line',  y=5*i+1, color='blue', ax=ax, label = 'Owce')
+        avrWinDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
+        avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
+        avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
         plt.show()
+
+def plotGameLength():
+    #if plotActive==False:
+    #    return
+    plt.plot(gameLength)
+    plt.ylabel('Liczba gier')
+    plt.xlabel('Liczba tur')
+    plt.show()
+    
 
 
 config = pd.read_csv(r'./config.csv')
@@ -72,7 +81,7 @@ avrTimeToWin = np.zeros(typesCount)
 #print(config.iloc[0]['Types'])
 #print(wins)
 
-
+noWinner = 0
 
 
 for n in range(numOfGames):
@@ -97,14 +106,20 @@ for n in range(numOfGames):
             T  = 'T' + str(num+1)
             wins[int(df.iloc[0][T])]+=1
             avrTimeToWin[int(df.iloc[0][T])]+=df.iloc[-1]['LP']
+            WR = 'R' + str(w_id);
+            WS = 'S' + str(w_id);
+            WP = 'P' + str(w_id);
+            WC = 'C' + str(w_id);
+            WH = 'H' + str(w_id);
             break
 
     if w_id == 0:
+        noWinner += 1
         print("Rozgrywka bez zwycięzcy")
 
     winnerGraph()
     
-
+print("Rozgrywek bez zwycięzcy łącznie: ", noWinner)
 
 
 for n in range(typesCount):
@@ -170,4 +185,13 @@ for n in range(1, int(minLenOfGame)):
 print(avrWinDF)
 avrWinGraph()
 
+#maxGameLength
 
+gameLength = np.zeros(int(maxLenOfGame)+1)
+for game in range(numOfGames):
+    path = './Dane/dane'+str(game+1)+'.csv'
+    df = pd.read_csv(path)
+    gameLength[int(df.iloc[-1]['LP'])] += 1
+
+print(gameLength)
+plotGameLength()
