@@ -34,6 +34,7 @@ Przygotowany skrypt umożliwia stworzenie wykresów, przedstawiających przydatn
 ### Uruchomienie skryptu
 
 Do działania wymagane są biblioteki numpy, matplotlib oraz pandas.
+Do pliku config.csv wpisać liczbę przeprowadzonych gier w kolumnie N
 
 ```
 python3 ./Analiza/skrypt.py
