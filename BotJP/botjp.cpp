@@ -6,8 +6,9 @@ long long int decisionMaker(int exchange, int buy, int big, int rabbit, int shee
 long long int possible(long long int decision);
 
 
-long long int botkrolik(int s[5][7], int id)
+long long int krolikowy(int s[5][7], int id)
 {
+    int swinia,owca;
     long long int decision=0;
     const int bank=0;
     int zapas=0;
@@ -16,7 +17,7 @@ long long int botkrolik(int s[5][7], int id)
     while((s[bank][0]+(zapas+1))*2<=s[id][0])  //sprawdzamy, ile królików możemy wydać na wymianę tak, by miec szanse potem odzyskać wszystkie króliki obecne w banku
         zapas++;
 
-    int mnożnik=1;
+    int mnoznik=1;
     for(int i=0; i<=3; i++) //liczymy nadwyżkę zwierząt w "krolikojednostkach"
     {
         if (s[id][i]==0)
@@ -25,7 +26,7 @@ long long int botkrolik(int s[5][7], int id)
             break;
         }
         if(i==1)
-            mnożnik=6;
+            mnoznik=6;
         else if (i==2)
             mnoznik=12;
         else if (i==3)
@@ -84,36 +85,59 @@ long long int botkrolik(int s[5][7], int id)
                     else if(s[id][1]==1&&s[id][2]>1)
                         portfel=(s[id][2]-1)*2;
                     else if(s[id][1]>1&&s[id][2]==1)
-                        portfel=s[id][1]-1
+                        portfel=s[id][1]-1;
                                 else portfel=(s[id][2]-1)*2+s[id][2]-1;
 
 
 
                     if(portfel>=6) //mam dużo owiec i swin (przeliczam na owce)
                     {
-                          int swinia=0;
-                          int owca=0;
-                          while(s[id][2]>1&&(swinia+1)*2<=6)
-                                świnia++;
+                        swinia=0;
+                        owca=0;
+                        while(s[id][2]>1&&(swinia+1)*2<=6)
+                            swinia++;
 
 
-                          if(świnia<3&&s[id][1]-1>=6-świnia*2)
-                          while(świnia*2+owca<6)
-                             owca++;
+                        if(swinia<3&&s[id][1]-1>=6-swinia*2)
+                            while(swinia*2+owca<6)
+                                owca++;
 
-                          else
-                          {
-                          if(swinia<3)
-                          świnia++;
-                          while(świnia*2+owca<6)
-                          owca++;
-                          };
+                        else
+                        {
+                            if(swinia<3)
+                                swinia++;
+                            while(swinia*2+owca<6)
+                                owca++;
+                        }
 
 
-                          decisionMaker(1,1,3,0,owca,swinia,0,0,0,0,s);
+                        decision=decisionMaker(1,1,3,0,owca,swinia,0,0,0,0,s);
                     }
                     else      //dokup swinie i owce
                     {
+                        swinia=0;
+                        owca=0;
+                        if(s[id][2]==0)
+                        {
+                            if(zapas>=12)
+                                decision=decisionMaker(1,1,2,12,0,0,0,0,0,0,s);
+                            else if (zapas>=6&&s[id][1]==0)
+                            decision=decisionMaker(1,1,1,12,0,0,0,0,0,0,s);
+                            else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s);
+                        }
+                        else if (s[id][1]==0)
+                        {
+                          if(zapas>=6)
+                          decision=decisionMaker(1,1,1,6,0,0,0,0,0,0,s);
+                          else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s);
+
+                        }
+                        else{
+                        if(zapas>=12) decision=decisionMaker(1,1,2,12,0,0,0,0,0,0,s);
+                        else if(zapas>=6) decision=decisionMaker(1,1,1,6,0,0,0,0,0,0,s);
+                        else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s);
+
+                        }
 
 
 
@@ -127,7 +151,7 @@ long long int botkrolik(int s[5][7], int id)
 
 
         }
-        else decision=decisionMaker=(0,0,0,0,0,0,0,0,0,0,s); //zakończ turę
+        else decision=decisionMaker(0,0,0,0,0,0,0,0,0,0,s); //zakończ turę
 
 
     }
@@ -141,7 +165,7 @@ int main()
 {
     int tab[5][7]= {{100, 100, 100, 100, 100, 100, 100}, {100, 100, 100, 100, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
-    cout << bot(tab, 1);
+    cout << krolikowy(tab, 1);
 
     return 0;
 }
