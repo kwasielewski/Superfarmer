@@ -55,17 +55,9 @@ long long int swinski(int* s[5], int id){
     	state = 2;
     }else if((presence&2) == 2){
     	state = 1;
-    }else if(presence <2){
+    }else {
         state = 0;
     }
-	if(state!=10){
-		for(int i  = 1 ; i < 5;  i++){
-		    if(s[id][i-1]==0&&s[id][i]!=0){
-		        state = 4;
-		    }
-		}
-    }
-
 	
     
 
@@ -87,7 +79,7 @@ long long int swinski(int* s[5], int id){
     		if(s[id][0]>6){
 		    //decision = strToDec("11000000110000000000000");
 		    //cout << "Powinienem tu być\n";
-		    decision = decisionMaker(1, 1, 0, 6, 0, 0, 0, 0, 0, 0, s);
+		    decision = decisionMaker(1, 1, 1, 6, 0, 0, 0, 0, 0, 0, s);
 			}else{
 
 				decision = 0;
@@ -99,17 +91,17 @@ long long int swinski(int* s[5], int id){
 
             if(s[bankID][0]< 20){
                 if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0,s);
+                    decision = decisionMaker(1, 1, 2, 0, 2, 0, 0, 0, 0, 0,s);
                 }
             }else {
                 if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
 
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
+                    decision  = decisionMaker(1, 1, 2, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 0, 2, 0, 0, 0, 0, 0, s);
                 }
             }
             break;
@@ -136,13 +128,13 @@ long long int swinski(int* s[5], int id){
                 }
                 buy[notPresentID] = 1;
             }else{
-                decision = decisionMaker(1, 1, notPresentID-1,buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0 , s);
+                decision = decisionMaker(1, 1, notPresentID,buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0 , s);
                 break;
             }
             x = notPresent ++;
             while(x < 5){
                 if(s[id][x] > 1){
-                    decision = decisionMaker(1, 0, x, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0, s);
+                    decision = decisionMaker(1, 0, x+1, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0, s);
                 	break;
                 }else{
                 	x++;
@@ -168,11 +160,11 @@ long long int swinski(int* s[5], int id){
                 //dokupienie świni
                 if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
+                    decision  = decisionMaker(1, 1, 2, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 0, 2, 0, 0, 0, 0, 0, s);
                 }
 
             }
@@ -182,28 +174,14 @@ long long int swinski(int* s[5], int id){
             //mam już krowę - zachowanie praktycznie takie jak w case 2
             if(s[id][0]>12){
                     //kup świnię za króliki
-                    decision = decisionMaker(1, 1, 1, 12, 0, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 12, 0, 0, 0, 0, 0, 0, s);
                 }else if(s[id][0]>6 and s[id][1]> 1){
-                    decision  = decisionMaker(1, 1, 1, 6, 1, 0, 0, 0, 0, 0, s);
+                    decision  = decisionMaker(1, 1,2, 6, 1, 0, 0, 0, 0, 0, s);
                 }else if(s[id][1]>1){
-                    decision = decisionMaker(1, 1, 1, 0, 2, 0, 0, 0, 0, 0, s);
+                    decision = decisionMaker(1, 1, 2, 0, 2, 0, 0, 0, 0, 0, s);
             }
         }
-        case 4:{
-            //być może uzupełnij niewygrywające braki
-            decision = 0;
-            for(int i = 3 ; i> 0; i--){
-            	if(s[id][i]==0 && s[id][i+1]>1){
-                    int toBuy [5] = {0, 0, 0, 0, 0};
-                    toBuy[i] = 1*value[i+1]/value[i]; ///?
-            		decision = decisionMaker(1,0,i, toBuy[0], toBuy[1], toBuy[2],toBuy[3], toBuy[4], 0, 0, s);
-            		break;
-            	}
-
-            }
-
-
-        }
+        
         default:{
             break;
             }
