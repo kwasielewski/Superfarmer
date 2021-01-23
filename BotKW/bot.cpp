@@ -1,12 +1,12 @@
 #include <iostream>
 using namespace std;
 
-long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]);
+long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int* s[5]);
 
 long long int possible(long long int decision);
 
 
-long long int bot(int s[5][7], int id){
+long long int swinski(int* s[5], int id){
 	int debug = 0;
 	int bankID = 0;
     long long int decision=0;
@@ -216,8 +216,17 @@ long long int bot(int s[5][7], int id){
 
 
 
-int main(){
-    int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {1, 1, 1, 5, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
+/*int main(){
+    int **Stado = new int*[5];
+  for(int i = 0; i <= 4; i++)
+		Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
+	  Stado[0][0] = 60; Stado[0][1] = 24; Stado[0][2] = 20; Stado[0][3] = 12; Stado[0][4] = 6; Stado[0][5] = 4; Stado[0][6] = 2;
+	  for(int i = 1; i <= 3; i++){
+		Stado[i][0] = 7;
+		for(int j = 1; j <= 6; j++)
+		  Stado[i][j] = 0;
+  }	
+    /*int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {1, 1, 1, 5, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
     cout <<"Jeden "<< bot(tab, 1) << endl;
 	for(int i  = 0;  i <7; i++){
@@ -227,12 +236,15 @@ int main(){
 	cout <<"Dwa " << bot(tab, 1)<<endl;
 	tab[1][0] = 15;
 	cout <<"Trzy "<< bot(tab,1) <<endl;
+	
+    */
+    cout << bot(Stado, 1);
     return 0;
-}
+}*/
 
 
 
-long long int possible(long long int decision, int s[5][7]){
+long long int possible(long long int decision, int* s[5]){
     //jeśli pomijam to git
 
     int code[10];
@@ -287,8 +299,8 @@ long long int possible(long long int decision, int s[5][7]){
     return decision;
 }
 
-long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int s[5][7]){
-	cout << "Ex: " << exchange << " Buy: " << buy << " Big: " << big << " Num: " << rabbit << " " << sheep << " " << pig << " " << cow << " "  <<  horse << " " << sDog << " " << bDog <<endl; 
+long long int decisionMaker(int exchange, int buy, int big, int rabbit, int sheep, int pig, int cow, int horse, int sDog, int bDog, int* s[5]){
+	//cout << "Ex: " << exchange << " Buy: " << buy << " Big: " << big << " Num: " << rabbit << " " << sheep << " " << pig << " " << cow << " "  <<  horse << " " << sDog << " " << bDog <<endl; 
 	long long int output = 0;
 
 	output += exchange*2+buy;
