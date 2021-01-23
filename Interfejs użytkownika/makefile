@@ -12,7 +12,7 @@
 	
 	
 
-  TARGET = xd
+  TARGET = SFgrafika-main
  	LDLIBS = $(shell pkg-config --libs gtkmm-3.0)
  	
   all: $(TARGET)
