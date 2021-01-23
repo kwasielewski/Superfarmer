@@ -17,7 +17,7 @@ edit do komunikacji: zamiast 5 tablic powinna być jedna 5x7, wtedy na wejściu 
 również liczbę, która mówi mu, która z linii należy do niego
 KOD DO KOMUNIKACJI MUSI ULEC ZMIANIE W OBLICZU NAJNOWSZYCH INTERPRETACJI INSTRUKCJI
 
-Nowy kod: (1bit- 1 = podjęcie wymiany, 0 = pominięcie)/(1b - 1 = kupno, 0 = sprzedaż)/(3b - typ dużego zwierzęcia)/(28b - liczba zwierząt) - łącznie kod 35 bitowy
+Nowy kod: (1bit- 1 = podjęcie wymiany, 0 = pominięcie)/(1b - 1 = kupno, 0 = sprzedaż)/(3b - typ dużego zwierzęcia)/(28b - liczba zwierząt) - łącznie kod 33 bitowy
 
 w przypadku kupna duże zwierzę oznacza to co gracz chce kupić, reszta oznacza to co on oferuje ze swojej farmy bankowi
 
