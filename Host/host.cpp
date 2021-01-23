@@ -32,7 +32,85 @@ static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
 {
   //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
   //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
-
+  int tab[5] = {0, 0, 0, 0, 0}; //kroliki, owce, swinie, krowy, konie (z kostek)
+  if(kostka1 % 2 == 0)
+    kostka1 = 2;
+  if(kostka2 % 2 == 1)
+    kostka2 = 1;
+  switch (kostka1)
+  {
+    case 1:
+      if(Stado[id][5] > 0){
+        Stado[id][5]--;
+        Stado[0][5]++;
+      }
+      else{
+        Stado[0][0] += Stado[id][0];
+        Stado[id][0] = 0;
+      }
+      break;
+    case 2:
+      tab[0]++;
+      break;
+    case 3:
+      tab[1]++;
+      break;
+    case 5:
+      tab[2]++;
+      break;
+    case 7:
+      tab[4]++;
+      break;
+    case 9:
+      tab[1]++;
+      break;
+    case 11:
+      tab[2]++;
+      break;
+    default:
+      break;
+  }
+  switch(kostka2)
+  {
+    case 1: 
+      tab[0]++;
+      break;
+    case 2:
+      tab[3]++;
+      break;
+    case 4:
+      tab[1]++;
+      break;
+    case 6:
+      tab[2]++;
+      break;
+    case 8:
+      tab[1]++;
+      break;
+    case 10:
+      if(Stado[id][6] > 0){
+        Stado[id][6]--;
+        Stado[0][6]++;
+      }
+      else
+        for(int i = 1; i <= 3; i++){
+          Stado[0][i] += Stado[id][i];
+          Stado[id][i] = 0;
+        }
+      break;
+    case 12:
+      tab[1]++;
+      break;
+    default:
+      break;
+  }
+  //transfer zwierząt z głównego stada w wyniku rozmnażania (z zachowaniem możliwości zasobnych głównego stada)
+  for(int i = 0; i < 5; i++){
+    int x = Stado[id][i], y = Stado[0][i];
+    Stado[id][i] += min((x + tab[i])/2, y);
+    Stado[0][i] -= min((x + tab[i])/2, y);
+  }
+  return;
 }
 static bool czyKoniecGry(int *Stado[7], int gracz)
 {
