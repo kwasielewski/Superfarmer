@@ -13,21 +13,25 @@ extern void wymianaZatwierdzona(int *Stado[7]); //wyświetlenie informacji o zaa
 extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
 extern void wyswietlWynikRzutu(int *Stado[7], int id, int kostka1, int kostka2); //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
 long long (*bots[4])(int*[7], int); //wskaźniki na boty
+
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
   srand(getpid() + time(NULL));
   return rand();
 }
+
 static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
 //funkcja zwraca liczbę zwierząt do wymiany - liczby są już dostosowane względem możliwości głównego stada,
 // tj. mogą być mniejsze niż wynikające z tabeli wymian
 {
 
 }
+
 static bool czyWymianaPoprawna(int *Stado[7], int id, int Wymiana[9])
 {
 
 }
+
 static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
 {
   //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
@@ -112,6 +116,7 @@ static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
   }
   return;
 }
+
 static bool czyKoniecGry(int *Stado[7], int gracz)
 {
   for(int j = 0; j <= 4; j++)
@@ -119,6 +124,7 @@ static bool czyKoniecGry(int *Stado[7], int gracz)
       return false;
   return true;
 }
+
 static int* usadzGraczy(bool CzyCzlowiekGra)
 {
   int *Usadzenie = new int[4]; //tabela zawierająca kolejność rozgrywki poczynając od gracza pod indeksem 1
@@ -154,17 +160,21 @@ static int* usadzGraczy(bool CzyCzlowiekGra)
     }
   return Usadzenie;
 }
+
 static int** inicjujStada()
 {
   int **Stado = new int*[5];
   for(int i = 0; i <= 4; i++)
     Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
   Stado[0][0] = 60; Stado[0][1] = 24; Stado[0][2] = 20; Stado[0][3] = 12; Stado[0][4] = 6; Stado[0][5] = 4; Stado[0][6] = 2;
-  for(int i = 1; i <= 3; i++)
-    for(int j = 0; j <= 6; j++)
+  for(int i = 1; i <= 3; i++){
+    Stado[i][0] = 1;
+    for(int j = 1; j <= 6; j++)
       Stado[i][j] = 0;
+  }
   return Stado;
 }
+
 void rozpocznijGre(bool czyCzlowiekGra)
 {
   int *Usadzenie = usadzGraczy(czyCzlowiekGra);
@@ -218,6 +228,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
   delete[] Wymiana;
   Koniec_Gry(zwyciezca);
 }
+
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
   rozpocznijGre(true);
