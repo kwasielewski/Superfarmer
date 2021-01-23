@@ -3,20 +3,20 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
-extern long long krolikowy(int *Stado[7], int id);
-extern long long randomizowany(int *Stado[7], int id);
-extern long long usainbolt(int *Stado[7], int id);
-extern long long swinski(int *Stado[7], int id);
-long long testowybot(int *Stado[7], int id)
+extern long long krolikowy(int *Stado[5], int id);
+extern long long randomizowany(int *Stado[5], int id);
+extern long long usainbolt(int *Stado[5], int id);
+extern long long swinski(int *Stado[5], int id);
+long long testowybot(int *Stado[5], int id)
 {
   return 0LL;
 }
 extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
-extern long long dokonajWymiany(int *Stado[7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
-extern void wymianaZatwierdzona(int *Stado[7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
+extern long long dokonajWymiany(int *Stado[5], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
+extern void wymianaZatwierdzona(int *Stado[5]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
-extern void wyswietlWynikRzutu(int *Stado[7], int id, int kostka1, int kostka2); //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
-long long (*bots[4])(int*[7], int); //wskaźniki na boty
+extern void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2); //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
+long long (*bots[4])(int*[5], int); //wskaźniki na boty
 
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
@@ -47,14 +47,41 @@ static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
   return;
 }
 
-static bool czyWymianaPoprawna(int *Stado[7], int id, int Wymiana[9])
+static bool czyWymianaPoprawna(int *Stado[5], int id, int Wymiana[9])
 //funkcja sprawdza poprawność żądań z tabelą wymian i dostosowuje liczby do możliwości stada głównego 
 //tj. może pogorszyć liczby z żądania gracza, lecz ten miał pełną informację na temat zasobności stada głównego żądając wymiany (wiedział ile może dostać)
 {
-
+  int krolikojednostki[7] = {1, 6, 12, 36, 72, 6, 36}; //wartości zwierząt w przeliczeniu na króliki
+  if(Wymiana[0] == 0)
+  {
+    if(Stado[id][Wymiana[1]] == 0)
+      return false; //gracz nie posiada sprzedawanego zwierzęcia
+    int otrzymywane = 0;
+    for(int i = 2; i <= 8; i++)
+      otrzymywane += Wymiana[i]*krolikojednostki[i - 2];
+    if(otrzymywane > krolikojednostki[Wymiana[1]])
+      return false; //zwierzęta żądane za sprzedawane są droższe niż sprzedawane (wg przeliczników)
+    for(int i = 2; i <= 8; i++)
+      Wymiana[i] = min(Wymiana[i], Stado[0][i - 2]); //zmiana żądania danego zwierzęcia jeżeli stado główne ma ich mniej niż żądanie (gracz wiedział w momencie decyzji ile jest ich w stadzie więc świadomie podjął te decyzje)
+    return true;
+  }
+  else
+  {
+    if(Stado[0][Wymiana[1]] == 0)
+      return false; //stado główne nie posiada żądanego zwierzęcia
+    for(int i = 2; i <= 8; i++)
+      if(Wymiana[i] > Stado[id][i - 2])
+        return false; //gracz nie posiada oferowanej liczby zwierząt
+    int otrzymywane = 0;
+    for(int i = 2; i <= 8; i++)
+      otrzymywane += Wymiana[i]*krolikojednostki[i - 2];
+    if(otrzymywane < krolikojednostki[Wymiana[1]])
+      return false; //gracz żąda zwierzęcia oferując zwierzęta o zbyt małej wartości (względem królików wg tabeli przeliczników)
+    return true;
+  }
 }
 
-static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
+static void stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
 {
   //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
   //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
@@ -139,7 +166,7 @@ static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
   return;
 }
 
-static bool czyKoniecGry(int *Stado[7], int gracz)
+static bool czyKoniecGry(int *Stado[5], int gracz)
 {
   for(int j = 0; j <= 4; j++)
     if(Stado[gracz][j] == 0)
@@ -202,7 +229,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
   int *Usadzenie = usadzGraczy(czyCzlowiekGra);
   int **Stado = inicjujStada();
   int *Wymiana = new int[9];
-  int zwyciezca = -1, kostka1, kostka2; //kostka1: 
+  int zwyciezca = -1, kostka1, kostka2; 
   long long kodWymiany = 0;
   while(zwyciezca == -1){
     for(int i = 0; i < 4; i++){
