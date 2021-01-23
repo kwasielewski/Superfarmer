@@ -3,21 +3,38 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
-extern long long krolikowy(const int Stado[5][7], int id);
-extern long long randomizowany(const int Stado[5][7], int id);
-extern long long usainbolt(const int Stado[5][7], int id);
-extern long long swinski(const int Stado[5][7], int id);
+extern long long krolikowy(int *Stado[7], int id);
+extern long long randomizowany(int *Stado[7], int id);
+extern long long usainbolt(int *Stado[7], int id);
+extern long long swinski(int *Stado[7], int id);
 extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
-extern long long dokonajWymiany(const int Stado[5][7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
-extern void wymianaZatwierdzona(const int Stado[5][7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
+extern long long dokonajWymiany(int *Stado[7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
+extern void wymianaZatwierdzona(int *Stado[7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
-int (*bots[4])(const int[5][7], int); //wskaźniki na boty
+extern void wyswietlWynikRzutu(int *Stado[7], int id, int kostka1, int kostka2); //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
+long long (*bots[4])(int*[7], int); //wskaźniki na boty
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
   srand(getpid() + time(NULL));
   return rand();
 }
-static bool czyKoniecGry(int Stado[5][7], int gracz)
+static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
+//funkcja zwraca liczbę zwierząt do wymiany - liczby są już dostosowane względem możliwości głównego stada,
+// tj. mogą być mniejsze niż wynikające z tabeli wymian
+{
+
+}
+static bool czyWymianaPoprawna(int *Stado[7], int id, int Wymiana[9])
+{
+
+}
+static void stadoPoRzucie(int *Stado[7], int id, int kostka1, int kostka2)
+{
+  //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
+  //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
+
+}
+static bool czyKoniecGry(int *Stado[7], int gracz)
 {
   for(int j = 0; j <= 4; j++)
     if(Stado[gracz][j] == 0)
@@ -79,12 +96,12 @@ void rozpocznijGre(bool czyCzlowiekGra)
   long long kodWymiany = 0;
   while(zwyciezca == -1){
     for(int i = 0; i < 4; i++){
-      kodWymiany = bots[Usadzenie[i]](Stado[5][7], i + 1);
+      kodWymiany = bots[Usadzenie[i]](Stado, i + 1);
       if(kodWymiany & (1LL << 35)){ //gracz żąda wymiany
-        konwersjaKoduWymiany(kodWymiany, Wymiana);
-        if(!czyWymianaPoprawna(Stado[5][7], i + 1, Wymiana)){
+        konwersjaKoduWymiany(Wymiana, kodWymiany);
+        if(!czyWymianaPoprawna(Stado, i + 1, Wymiana)){
           if(Usadzenie[i] != 1){
-            zakonczGre(-1); //zakończenie rozgrywki z powodu błędu bota
+            Koniec_Gry(-1); //zakończenie rozgrywki z powodu błędu bota
             return;
           }
           else{ //wyświetlenie błędu żądania wymiany złożonej przez gracza i ponowienie możliwości wymiany
@@ -97,16 +114,20 @@ void rozpocznijGre(bool czyCzlowiekGra)
         {
           int kupno = (Wymiana[0] == 1)?1:-1;
           Stado[i][Wymiana[1]] += kupno;
-          for(int j = 2; j <= 8; j++)
-            Stado[i][j] -= kupno*Wymiana[j];
+          Stado[0][Wymiana[1]] -= kupno;
+          for(int j = 2; j <= 8; j++){
+            Stado[i + 1][j] -= kupno*Wymiana[j];
+            Stado[0][j] += kupno*Wymiana[j];
+          }
         }
       }
       //rzut kostką, zmiana w stadzie wynikająca z rzutu
-      kostka1 = losuj();
-      kostka2 = losuj();
-      stadoPoRzucie(Stado[5][7], i + 1, kostka1, kostka2);
+      kostka1 = 1 + losuj()%12;
+      kostka2 = 1 + losuj()%12;
+      stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
+      wyswietlWynikRzutu(Stado, i + 1, kostka1, kostka2);
       //TUTAJ ZAPIS DO PLIKU
-      if(czyKoniecGry(Stado[5][7], i + 1)){
+      if(czyKoniecGry(Stado, i + 1)){
         zwyciezca = i + 1;
         break;
       }
