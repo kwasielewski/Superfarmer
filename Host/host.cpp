@@ -3,24 +3,42 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
+static void WypiszPlansze(int *Stado[5])
+{ //funkcja do testowania hosta
+  for(int i = 0; i < 5; i++){
+    for(int j = 0; j < 7; j++)
+      cout << Stado[i][j] << ' ';
+    cout << '\n';
+  }
+}
+
 extern long long krolikowy(int *Stado[5], int id);
 extern long long randomizowany(int *Stado[5], int id);
 extern long long usainbolt(int *Stado[5], int id);
 extern long long swinski(int *Stado[5], int id);
+long long dokonajWymiany(int *Stado[5], int id)
+{//wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu), funkcja do testowania hosta
+  WypiszPlansze(Stado);
+  cout << "Podaj kod wymiany.\n";
+  long long kod;
+  cin >> kod;
+  return kod;
+}
+
 long long testowybot(int *Stado[5], int id)
 {
   return 0LL;
 }
-extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
-extern long long dokonajWymiany(int *Stado[5], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
-extern void wymianaZatwierdzona(int *Stado[5]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
-extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
-extern void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2); //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
+void Koniec_Gry(int zwyciezca){return;} //wywołanie komunikatu o zakończeniu gry w GTK
+void wymianaZatwierdzona(int *Stado[5]) {return;} //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
+void wymianaOdrzucona(){
+  cout << "PIERDOLNIJ SIE W LEB\n";
+  return;} //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
+void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2){return;} //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
 long long (*bots[4])(int*[5], int); //wskaźniki na boty
 
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
-  srand(getpid() + time(NULL));
   return rand();
 }
 
@@ -44,6 +62,10 @@ static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
   Wymiana[1] = kodWymiany % (1LL << 3); //id dużego zwierzęcia
   kodWymiany /= (1LL << 3);
   Wymiana[0] = kodWymiany & 1LL;
+  cout << "WYMIANA: ";
+  for(int i = 0; i <= 8; i++)
+    cout << Wymiana[i] << ' ';
+  cout << '\n';
   return;
 }
 
@@ -67,6 +89,8 @@ static bool czyWymianaPoprawna(int *Stado[5], int id, int Wymiana[9])
   }
   else
   {
+    if(Wymiana[1] == 0)
+      return false; //duże zwierzę jest królikiem
     if(Stado[0][Wymiana[1]] == 0)
       return false; //stado główne nie posiada żądanego zwierzęcia
     for(int i = 2; i <= 8; i++)
@@ -216,7 +240,7 @@ static int** inicjujStada()
   for(int i = 0; i <= 4; i++)
     Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
   Stado[0][0] = 60; Stado[0][1] = 24; Stado[0][2] = 20; Stado[0][3] = 12; Stado[0][4] = 6; Stado[0][5] = 4; Stado[0][6] = 2;
-  for(int i = 1; i <= 3; i++){
+  for(int i = 1; i <= 4; i++){
     Stado[i][0] = 1;
     for(int j = 1; j <= 6; j++)
       Stado[i][j] = 0;
@@ -231,10 +255,13 @@ void rozpocznijGre(bool czyCzlowiekGra)
   int *Wymiana = new int[9];
   int zwyciezca = -1, kostka1, kostka2; 
   long long kodWymiany = 0;
+  for(int i = 0; i < 4; i++)
+    cout << Usadzenie[i] << ((Usadzenie[i] == 1)? " TO JEST CZŁEK":"") << '\n';
   while(zwyciezca == -1){
     for(int i = 0; i < 4; i++){
-      kodWymiany = bots[Usadzenie[i]](Stado, i + 1);
-      if(kodWymiany & (1LL << 33)){ //gracz żąda wymiany
+      cout << i << '\n';
+      kodWymiany = bots[i](Stado, i + 1);
+      if(kodWymiany & (1LL << 32)){ //gracz żąda wymiany
         konwersjaKoduWymiany(Wymiana, kodWymiany);
         if(!czyWymianaPoprawna(Stado, i + 1, Wymiana)){
           if(Usadzenie[i] != 1){
@@ -250,12 +277,13 @@ void rozpocznijGre(bool czyCzlowiekGra)
         else //wymiana poprawna, dokonanie zmian w stadach
         {
           int kupno = (Wymiana[0] == 1)?1:-1;
-          Stado[i][Wymiana[1]] += kupno;
+          Stado[i + 1][Wymiana[1]] += kupno;
           Stado[0][Wymiana[1]] -= kupno;
           for(int j = 2; j <= 8; j++){
-            Stado[i + 1][j] -= kupno*Wymiana[j];
-            Stado[0][j] += kupno*Wymiana[j];
+            Stado[i + 1][j - 2] -= kupno*Wymiana[j];
+            Stado[0][j - 2] += kupno*Wymiana[j];
           }
+          WypiszPlansze(Stado);
         }
       }
       //rzut kostką, zmiana w stadzie wynikająca z rzutu
@@ -280,5 +308,6 @@ void rozpocznijGre(bool czyCzlowiekGra)
 
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
+  srand(getpid() + time(NULL));
   rozpocznijGre(true);
 }
