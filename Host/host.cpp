@@ -32,9 +32,72 @@ long long testowybot(int *Stado[5], int id)
 void Koniec_Gry(int zwyciezca){return;} //wywołanie komunikatu o zakończeniu gry w GTK
 void wymianaZatwierdzona(int *Stado[5]) {return;} //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 void wymianaOdrzucona(){
-  cout << "PIERDOLNIJ SIE W LEB\n";
+  cout << "Żądanie niepoprawne\n";
   return;} //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
-void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2){return;} //wyświetlenie komunikatu o wyniku rzutu i wynikających z niego zmianach w stadzie
+void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
+{ //funkcja w wersji do testowania hosta
+  //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
+  string jeden, dwa;
+  if(kostka1 % 2 == 0)
+    kostka1 = 2;
+  if(kostka2 % 2 == 1)
+    kostka2 = 1;  
+  switch (kostka1)
+  {
+    case 1:
+      jeden = "lisa";
+      break;
+    case 2:
+      jeden = "królika";
+      break;
+    case 3:
+      jeden = "owcę";
+      break;
+    case 5:
+      jeden = "świnię";
+      break;
+    case 7:
+      jeden = "konia";
+      break;
+    case 9:
+      jeden = "owcę";
+      break;
+    case 11:
+      jeden = "świnię";
+      break;
+    default:
+      break;
+  }
+  //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
+  switch(kostka2)
+  {
+    case 1: 
+      dwa = "królika";
+      break;
+    case 2:
+      dwa = "krowę";
+      break;
+    case 4:
+      dwa = "owcę";
+      break;
+    case 6:
+      dwa = "świnię";
+      break;
+    case 8:
+      dwa = "owcę";
+      break;
+    case 10:
+      dwa = "wilka";
+      break;
+    case 12:
+      dwa = "owcę";
+      break;
+    default:
+      break;
+  }
+  cout << "Wyrzuciłeś " << jeden << " i " << dwa << '\n';
+  return;
+} //wyświetlenie komunikatu o wyniku rzutu
 long long (*bots[4])(int*[5], int); //wskaźniki na boty
 
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
@@ -259,7 +322,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
     cout << Usadzenie[i] << ((Usadzenie[i] == 1)? " TO JEST CZŁEK":"") << '\n';
   while(zwyciezca == -1){
     for(int i = 0; i < 4; i++){
-      cout << i << '\n';
+      cout << i << ' ';
       kodWymiany = bots[i](Stado, i + 1);
       if(kodWymiany & (1LL << 32)){ //gracz żąda wymiany
         konwersjaKoduWymiany(Wymiana, kodWymiany);
