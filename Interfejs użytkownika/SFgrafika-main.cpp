@@ -126,7 +126,7 @@ void Koniec_Gry()
 
     GtkWidget *info_o_wyniku = gtk_label_new(NULL);
     if (czy_wygrales) gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Wygrałeś! Gratulacje!");
-    else gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Przegrałeś");
+    else gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Przegrałeś, Synu!");
     gtk_container_add(GTK_CONTAINER(okg_wewnatrz), info_o_wyniku);
 
     GtkWidget *przycisk_ok = gtk_button_new_with_label("OK");
