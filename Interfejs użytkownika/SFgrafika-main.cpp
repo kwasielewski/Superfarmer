@@ -24,7 +24,7 @@ Znajdą się tu opisy nastêpujących okien:
 */
 
 void Dokonaj_Wymiany();
-void Wymiana_Zatwierdzona();
+void Wymiana_Zatwierdzona(int *wybor);
 void Blad_Wymiana_Niemozliwa();
 void Rzut_Kostka();
 void Koniec_Gry();
@@ -41,7 +41,16 @@ void Dokonaj_Wymiany()
     menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_container_set_border_width (GTK_CONTAINER (menu), 30);
 
-    GtkWidget *wymiana_tekst = gtk_label_new("Jakie zwierzę chcesz nabyć?");
+    int wybor_gracza[10];
+
+    GtkWidget *kupno_czy_sprzedaz = gtk_combo_box_text_new();
+    const char *k_czy_p[] = {"Kupuję", "Sprzedaję"};
+    for (int i = 0; i < 2; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(kupno_czy_sprzedaz), k_czy_p[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(kupno_czy_sprzedaz), 0);
+    gtk_container_add(GTK_CONTAINER(menu), kupno_czy_sprzedaz);
+    wybor_gracza[0] = gtk_combo_box_get_active(GTK_COMBO_BOX(kupno_czy_sprzedaz));
+
+    GtkWidget *wymiana_tekst = gtk_label_new("Jakie zwierzę chcesz kupić/sprzedać?");
     gtk_container_add(GTK_CONTAINER(menu), wymiana_tekst);
 
     GtkWidget *wybierz_zwierze = gtk_combo_box_text_new();
@@ -49,11 +58,47 @@ void Dokonaj_Wymiany()
     for (int i = 0; i < 8; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(wybierz_zwierze), zwierzeta[i]);
     gtk_combo_box_set_active(GTK_COMBO_BOX(wybierz_zwierze), 0);
     gtk_container_add(GTK_CONTAINER(menu), wybierz_zwierze);
-    ///jak uzyskać informację o tym, co wybrał użytkownik? gtk_combo_box_get_active?
+    wybor_gracza[1] = gtk_combo_box_get_active(GTK_COMBO_BOX(wybierz_zwierze));
+
+    GtkWidget *ile_zwierzat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_container_set_border_width (GTK_CONTAINER (ile_zwierzat), 30);
+    gtk_container_add(GTK_CONTAINER(menu), ile_zwierzat);
+
+    const char *liczby[] = {"0", "1", "2", "3", "4", "5", "6"};
+
+    GtkWidget *ile_krolikow = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_krolikow), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_krolikow), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_krolikow);
+    wybor_gracza[2] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_krolikow));
+
+    GtkWidget *ile_owiec = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_owiec), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_owiec), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_owiec);
+    wybor_gracza[3] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_owiec));
+
+    GtkWidget *ile_swin = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_swin), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_swin), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_swin);
+    wybor_gracza[4] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_swin));
+
+    GtkWidget *ile_krow = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_krow), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_krow), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_krow);
+    wybor_gracza[5] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_krow));
+
+    GtkWidget *ile_koni = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_koni), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_koni), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_koni);
+    wybor_gracza[6] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_koni));
 
     GtkWidget *przycisk_zatwierdz = gtk_button_new_with_label("Zatwierdź");
     gtk_container_add(GTK_CONTAINER(menu), przycisk_zatwierdz);
-    g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), NULL); //wywołać z argumentem - wybrana opcja
+    g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), wybor_gracza); //wywołać z argumentem - wybrana opcja
 
     GtkWidget *przycisk_anuluj = gtk_button_new_with_label("Anuluj");
     gtk_container_add(GTK_CONTAINER(menu), przycisk_anuluj);
@@ -63,10 +108,17 @@ void Dokonaj_Wymiany()
     gtk_widget_show_all(okno_wymiana);
 }
 
-void Wymiana_Zatwierdzona() //wybrane zwierzę jako argument
+void Wymiana_Zatwierdzona(int *wybor) //wybrane zwierzę jako argument
 {
     ///połączyć z hostem gry
     ///musi potem nastąpić update tabeli w glowny_wewnatrz
+
+    ///wybor[0] = 0 jeśli sprzedaż
+    ///           1 jeśli kupno
+
+    ///wybor[1] = jaki zwierzak
+
+    ///wybor[2...8] = ile każdego z nich
 
     bool czy_wymiana_mozliwa = false; //testowe wywołanie (do zmiany później)
 
@@ -190,3 +242,4 @@ int main(int argc, char *argv[])
     gtk_widget_show_all(glowny);
     gtk_main();
 }
+
