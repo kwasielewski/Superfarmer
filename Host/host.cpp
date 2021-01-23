@@ -3,30 +3,14 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
-/* Biblioteki zewnętrzne do dołączenia w późniejszym etapie
-#include "bot1.h"
-#include "bot2.h"
-#include "bot3.h"
-#include "bot4.h"
-#include "randomize.h"*/
-//Boty z załączanych plików nagłówkowych
-extern int krolikowy(const int Stado[5][7], int id)
-extern int randomizowany(const int Stado[5][7], int id);
-extern int usainbolt(const int Stado[5][7], int id);
-extern int swinski(const int Stado[5][7], int id);
+extern long long krolikowy(const int Stado[5][7], int id);
+extern long long randomizowany(const int Stado[5][7], int id);
+extern long long usainbolt(const int Stado[5][7], int id);
+extern long long swinski(const int Stado[5][7], int id);
 extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
-extern int dokonajWymiany(const int Stado[5][7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
-void zakonczGre(int zwyciezca, int Usadzenie[4], int Stado[5][7]) //funkcja czyszcząca pamięć i wyświetlająca komunikat o końcu rozgrywki w GTK
-{
-  for(int i = 0; i < 5; i++)
-    delete[] Stado[i];
-  delete Stado;
-  delete Usadzenie;
-  Koniec_Gry(zwyciezca);
-}
+extern long long dokonajWymiany(const int Stado[5][7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
 extern void wymianaZatwierdzona(const int Stado[5][7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 extern void wymianaOdrzucona(); //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
-typedef pair<int, int> PII;
 int (*bots[4])(const int[5][7], int); //wskaźniki na boty
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
@@ -86,17 +70,56 @@ static int** inicjujStada()
       Stado[i][j] = 0;
   return Stado;
 }
-bool rozpocznijGre(int Usadzenie[4], int Stado[5][7])
+void rozpocznijGre(bool czyCzlowiekGra)
 {
-  int zwyciezca = -1;
-  while(true){
-    //during construction
+  int *Usadzenie = usadzGraczy(czyCzlowiekGra);
+  int **Stado = inicjujStada();
+  int *Wymiana = new int[9];
+  int zwyciezca = -1, kostka1, kostka2; //kostka1: 
+  long long kodWymiany = 0;
+  while(zwyciezca == -1){
+    for(int i = 0; i < 4; i++){
+      kodWymiany = bots[Usadzenie[i]](Stado[5][7], i + 1);
+      if(kodWymiany & (1LL << 35)){ //gracz żąda wymiany
+        konwersjaKoduWymiany(kodWymiany, Wymiana);
+        if(!czyWymianaPoprawna(Stado[5][7], i + 1, Wymiana)){
+          if(Usadzenie[i] != 1){
+            zakonczGre(-1); //zakończenie rozgrywki z powodu błędu bota
+            return;
+          }
+          else{ //wyświetlenie błędu żądania wymiany złożonej przez gracza i ponowienie możliwości wymiany
+            i--;
+            wymianaOdrzucona();
+            continue;
+          }
+        }
+        else //wymiana poprawna, dokonanie zmian w stadach
+        {
+          int kupno = (Wymiana[0] == 1)?1:-1;
+          Stado[i][Wymiana[1]] += kupno;
+          for(int j = 2; j <= 8; j++)
+            Stado[i][j] -= kupno*Wymiana[j];
+        }
+      }
+      //rzut kostką, zmiana w stadzie wynikająca z rzutu
+      kostka1 = losuj();
+      kostka2 = losuj();
+      stadoPoRzucie(Stado[5][7], i + 1, kostka1, kostka2);
+      //TUTAJ ZAPIS DO PLIKU
+      if(czyKoniecGry(Stado[5][7], i + 1)){
+        zwyciezca = i + 1;
+        break;
+      }
+    }
   }
-  zakonczGre(zwyciezca, Usadzenie, Stado);
+  for(int i = 0; i < 5; i++) //czyszczenie pamięci ze sterty
+    delete[] Stado[i];
+  delete[] Stado;
+  delete[] Usadzenie;
+  delete[] Wymiana;
+  Koniec_Gry(zwyciezca);
 }
-int tab[5][7];
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
-  int *Usadzenie = usadzGraczy(true);
-  int **Stado = inicjujStada();
+  rozpocznijGre(true);
 }
