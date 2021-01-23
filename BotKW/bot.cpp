@@ -1,5 +1,5 @@
 #include <iostream>
-#include "functions.h>
+#include "functions.h"
 using namespace std;
 
 
@@ -216,7 +216,7 @@ long long int swinski(int* s[5], int id){
 
 
 
-/*int main(){
+int main(){
     int **Stado = new int*[5];
   for(int i = 0; i <= 4; i++)
 		Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
@@ -228,19 +228,19 @@ long long int swinski(int* s[5], int id){
   }	
     int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {1, 1, 1, 5, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
-    cout <<"Jeden "<< bot(tab, 1) << endl;
+    /*cout <<"Jeden "<< bot(tab, 1) << endl;
 	for(int i  = 0;  i <7; i++){
 		tab[1][i] = 0;
 	}
 	tab[1][0]= 7;
 	cout <<"Dwa " << bot(tab, 1)<<endl;
 	tab[1][0] = 15;
-	cout <<"Trzy "<< bot(tab,1) <<endl;
+	cout <<"Trzy "<< bot(tab,1) <<endl;*/
 	
     
-    cout << bot(Stado, 1);
+    cout << swinski(Stado, 1);
     return 0;
-}*/
+}
 
 
 

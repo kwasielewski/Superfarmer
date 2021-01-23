@@ -1,5 +1,5 @@
 #include <iostream>
-#include "functions.h>
+#include "functions.h"
 using namespace std;
 
 long long int possible(long long int decision, int* s[5]){
