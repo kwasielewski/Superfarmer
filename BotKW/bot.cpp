@@ -2,7 +2,11 @@
 #include "functions.h>
 using namespace std;
 
-long long int bot(int s[5][7], int id){
+
+
+
+long long int swinski(int* s[5], int id){
+
 	int debug = 0;
 	int bankID = 0;
     long long int decision=0;
@@ -31,12 +35,14 @@ long long int bot(int s[5][7], int id){
     4 - mam braki w łańcuchu
     10 - da się wygrać w 1 ruchu
     */
+    
     if(debug) cout << "Nie ma " << notPresent << " ID:" << notPresentID << endl;
     if(notPresent == 1){
     	int extra = 0;
     	for(int i = 0; i < 5; i ++){
     		extra += max(s[id][i]-1, 0)*value[i];
     	}
+    	
     	if(debug) cout << extra << endl;
     	if(extra >= value[notPresentID]&& s[bankID][notPresentID]>0){
     		state = 10;
@@ -52,12 +58,16 @@ long long int bot(int s[5][7], int id){
     }else if(presence <2){
         state = 0;
     }
-
-    for(int i  = 1 ; i < 5;  i++){
-        if(s[id][i-1]==0&&s[id][i]!=0){
-            state = 4;
-        }
+	if(state!=10){
+		for(int i  = 1 ; i < 5;  i++){
+		    if(s[id][i-1]==0&&s[id][i]!=0){
+		        state = 4;
+		    }
+		}
     }
+
+	
+    
 
 
     if(debug) cout << (presence&8) << endl;
@@ -71,6 +81,7 @@ long long int bot(int s[5][7], int id){
     if(state < -1){
         cout << "Nieokreślono stanu gry\n";
     }
+    
     switch(state){
         case 0:{
     		if(s[id][0]>6){
@@ -105,17 +116,20 @@ long long int bot(int s[5][7], int id){
             }
 
         case 10:{
+        	
             int currentValue = 0;
             int buy[] = {0, 0 , 0, 0, 0};
             int x = notPresentID;
+
             while(x>-1 && currentValue < value[notPresent]){
                 if(s[id][x]> 1){
                     buy[x] = s[id][x]-1;
-                    currentValue += value[x];
-                }else{
-                    x--;
+                    currentValue += buy[x]*value[x];
                 }
+                    x--;
+                
             }
+          
             if(currentValue< value[notPresent]){
                 for(int i = 0; i < 5; i++){
                     buy[i] = 0;
@@ -129,9 +143,12 @@ long long int bot(int s[5][7], int id){
             while(x < 5){
                 if(s[id][x] > 1){
                     decision = decisionMaker(1, 0, x, buy[0], buy[1], buy[2], buy[3], buy[4], 0, 0, s);
+                	break;
+                }else{
+                	x++;
                 }
             }
-
+ 
             break;
             }
 
@@ -199,8 +216,17 @@ long long int bot(int s[5][7], int id){
 
 
 
-int main(){
-    int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {100, 100, 100, 100, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
+/*int main(){
+    int **Stado = new int*[5];
+  for(int i = 0; i <= 4; i++)
+		Stado[i] = new int[7];//0 - króliki, 1 - owce, 2 - świnie, 3 - krowy, 4 - konie, 5 - małe psy, 6 - duże psy
+	  Stado[0][0] = 60; Stado[0][1] = 24; Stado[0][2] = 20; Stado[0][3] = 12; Stado[0][4] = 6; Stado[0][5] = 4; Stado[0][6] = 2;
+	  for(int i = 1; i <= 3; i++){
+		Stado[i][0] = 7;
+		for(int j = 1; j <= 6; j++)
+		  Stado[i][j] = 0;
+  }	
+    int tab[5][7]={{100, 100, 100, 100, 100, 100, 100}, {1, 1, 1, 5, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0}};
 
     cout <<"Jeden "<< bot(tab, 1) << endl;
 	for(int i  = 0;  i <7; i++){
@@ -210,8 +236,13 @@ int main(){
 	cout <<"Dwa " << bot(tab, 1)<<endl;
 	tab[1][0] = 15;
 	cout <<"Trzy "<< bot(tab,1) <<endl;
+	
+    
+    cout << bot(Stado, 1);
     return 0;
-}
+}*/
+
+
 
 
 
