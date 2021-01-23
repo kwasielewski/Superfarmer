@@ -7,6 +7,10 @@ extern long long krolikowy(int *Stado[7], int id);
 extern long long randomizowany(int *Stado[7], int id);
 extern long long usainbolt(int *Stado[7], int id);
 extern long long swinski(int *Stado[7], int id);
+long long testowybot(int *Stado[7], int id)
+{
+  return 0LL;
+}
 extern void Koniec_Gry(int zwyciezca); //wywołanie komunikatu o zakończeniu gry w GTK
 extern long long dokonajWymiany(int *Stado[7], int id); //wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu)
 extern void wymianaZatwierdzona(int *Stado[7]); //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
@@ -21,13 +25,31 @@ int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testow
 }
 
 static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
-//funkcja zwraca liczbę zwierząt do wymiany - liczby są już dostosowane względem możliwości głównego stada,
-// tj. mogą być mniejsze niż wynikające z tabeli wymian
+//funkcja zwraca liczbę zwierząt do wymiany bez oglądania się na możliwości stada
 {
-
+  Wymiana[8] = kodWymiany % (1LL << 2); //duży pies
+  kodWymiany /= (1LL << 2);
+  Wymiana[7] = kodWymiany % (1LL << 3); //mały pies
+  kodWymiany /= (1LL << 3);
+  Wymiana[6] = kodWymiany % (1LL << 3); //koń
+  kodWymiany /= (1LL << 3);
+  Wymiana[5] = kodWymiany % (1LL << 4); //krowa
+  kodWymiany /= (1LL << 4);
+  Wymiana[4] = kodWymiany % (1LL << 5); //świnia
+  kodWymiany /= (1LL << 5);
+  Wymiana[3] = kodWymiany % (1LL << 5); //owca
+  kodWymiany /= (1LL << 5);
+  Wymiana[2] = kodWymiany % (1LL << 6); //królik
+  kodWymiany /= (1LL << 6);
+  Wymiana[1] = kodWymiany % (1LL << 3); //id dużego zwierzęcia
+  kodWymiany /= (1LL << 3);
+  Wymiana[0] = kodWymiany & 1LL;
+  return;
 }
 
 static bool czyWymianaPoprawna(int *Stado[7], int id, int Wymiana[9])
+//funkcja sprawdza poprawność żądań z tabelą wymian i dostosowuje liczby do możliwości stada głównego 
+//tj. może pogorszyć liczby z żądania gracza, lecz ten miał pełną informację na temat zasobności stada głównego żądając wymiany (wiedział ile może dostać)
 {
 
 }
@@ -144,16 +166,16 @@ static int* usadzGraczy(bool CzyCzlowiekGra)
         bots[i] = dokonajWymiany;
         break;
       case 2: 
-        bots[i] = krolikowy;
+        bots[i] = testowybot; //krolikowy;
         break;
       case 3:
-        bots[i] = randomizowany;
+        bots[i] = testowybot; //randomizowany;
         break;
       case 4:
-        bots[i] = usainbolt;
+        bots[i] = testowybot; //usainbolt;
         break;
       case 5:
-        bots[i] = swinski;
+        bots[i] = testowybot; //swinski;
         break;
       default:
         break;
@@ -185,7 +207,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
   while(zwyciezca == -1){
     for(int i = 0; i < 4; i++){
       kodWymiany = bots[Usadzenie[i]](Stado, i + 1);
-      if(kodWymiany & (1LL << 35)){ //gracz żąda wymiany
+      if(kodWymiany & (1LL << 33)){ //gracz żąda wymiany
         konwersjaKoduWymiany(Wymiana, kodWymiany);
         if(!czyWymianaPoprawna(Stado, i + 1, Wymiana)){
           if(Usadzenie[i] != 1){
