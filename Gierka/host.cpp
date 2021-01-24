@@ -374,8 +374,8 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
         konwersjaKoduWymiany(Wymiana, kodWymiany);
         if(!czyWymianaPoprawna(Stado, i + 1, Wymiana)){
           if(Usadzenie[i] != 1){
-            Koniec_Gry(-1, false); //zakończenie rozgrywki z powodu błędu bota
-            return;
+            //Koniec_Gry(-1, false); //zakończenie rozgrywki z powodu błędu bota
+            //return;
           }
           else{ //wyświetlenie błędu żądania wymiany złożonej przez gracza i ponowienie możliwości wymiany
             i--;
