@@ -3,11 +3,28 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
-static void WypiszPlansze(int *Stado[5])
+static void inicjujZapisDoPliku(ofstream &plik, int Usadzenie[4])
+{
+  plik << "LP,R1,S1,P1,C1,H1,d1,D1,R2,S2,P2,C2,H2,d2,D2,R3,S3,P3,C3,H3,d3,D3,R4,S4,P4,C4,H4,d4,D4,T1,T2,T3,T4\n0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,";
+  for(int i = 0; i < 3; i++)
+    plik << Usadzenie[i] << ',';
+  plik << Usadzenie[3] << '\n';
+}
+static void zapiszRunde(ofstream &plik, int *Stado[5], int nrrundy)
+{
+  plik << nrrundy << ',';
+  for(int i = 1; i < 5; i++)
+    for(int j = 0; j < 7; j++)
+      plik << Stado[i][j] << ',';
+  plik << ",,,\n";
+}
+static void WypiszPlansze(int *Stado[5], int czlowiek)
 { //funkcja do testowania hosta
   for(int i = 0; i < 5; i++){
     for(int j = 0; j < 7; j++)
       cout << Stado[i][j] << ' ';
+    if(i == czlowiek)
+      cout << " <== TO TWOJE STADO";
     cout << '\n';
   }
 }
@@ -18,7 +35,7 @@ extern long long usainbolt(int *Stado[5], int id);
 extern long long swinski(int *Stado[5], int id);
 long long dokonajWymiany(int *Stado[5], int id)
 {//wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu), funkcja do testowania hosta
-  WypiszPlansze(Stado);
+  WypiszPlansze(Stado, id);
   cout << "Podaj kod wymiany.\n";
   long long kod;
   cin >> kod;
@@ -105,7 +122,7 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
     default:
       break;
   }
-  cout << "Wyrzuciłeś " << jeden << " i " << dwa << '\n';
+  cout << "Gracz numer " << id << " wyrzucił " << jeden << " i " << dwa << '\n';
   return;
 } //wyświetlenie komunikatu o wyniku rzutu
 long long (*bots[4])(int*[5], int); //wskaźniki na boty
@@ -324,19 +341,24 @@ static int** inicjujStada()
   return Stado;
 }
 
-void rozpocznijGre(bool czyCzlowiekGra)
+void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
 {
+  ofstream zapisDoPliku;
+  zapisDoPliku.open(nazwaPlikuDoZapisu);
   int *Usadzenie = usadzGraczy(czyCzlowiekGra);
   int **Stado = inicjujStada();
   int *Wymiana = new int[9];
-  int zwyciezca = -1, kostka1, kostka2, cnt = 0; 
+  inicjujZapisDoPliku(zapisDoPliku, Usadzenie);
+  int zwyciezca = -1, kostka1, kostka2, cnt = 0, nrrundy = 0, czlowiek = -1; 
   long long kodWymiany = 0;
   for(int i = 0; i < 4; i++)
-    cout << Usadzenie[i] << ((Usadzenie[i] == 1)? " TO JEST CZŁEK":"") << '\n';
+    if(Usadzenie[i] == 1)
+      czlowiek = i + 1;
+  cout << "Jesteś graczem numer: " << czlowiek << '\n';
   while(zwyciezca == -1){
     bool czyzmiana = false;
+    nrrundy++;
     for(int i = 0; i < 4; i++){
-      cout << i << ' ';
       kodWymiany = bots[i](Stado, i + 1);
       if(kodWymiany & (1LL << 32)){ //gracz żąda wymiany
         konwersjaKoduWymiany(Wymiana, kodWymiany);
@@ -361,7 +383,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
             Stado[i + 1][j - 2] -= kupno*Wymiana[j];
             Stado[0][j - 2] += kupno*Wymiana[j];
           }
-          WypiszPlansze(Stado);
+          WypiszPlansze(Stado, czlowiek);
         }
       }
       //rzut kostką, zmiana w stadzie wynikająca z rzutu
@@ -369,7 +391,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
       kostka2 = 1 + losuj()%12;
       czyzmiana |= stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
       wyswietlWynikRzutu(Stado, i + 1, kostka1, kostka2);
-      //TUTAJ ZAPIS DO PLIKU
+      zapiszRunde(zapisDoPliku, Stado, nrrundy);
       if(czyKoniecGry(Stado, i + 1)){
         zwyciezca = i + 1;
         break;
@@ -390,10 +412,18 @@ void rozpocznijGre(bool czyCzlowiekGra)
   delete[] Stado;
   delete[] Usadzenie;
   delete[] Wymiana;
+  zapisDoPliku.close();
 }
 
-int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
+int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
   srand(getpid() + time(NULL));
-  rozpocznijGre(true);
+  string s;
+  if(argc < 2)
+    s = "przebieggry.csv";
+  else{
+    s = argv[1];  
+    s+=".csv";
+  }
+  rozpocznijGre(false, s);
 }
