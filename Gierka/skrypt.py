@@ -41,7 +41,7 @@ def avrGraph():
         avrDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
         avrDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
         avrDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
-        plt.title("Średni stan stada dla bota " + str(i+1))
+        plt.title("Średni stan stada dla bota " +str (int(df.iloc[0]['T'+str(i+1)]-1)))
         plt.show()
 
 def avrWinGraph():
@@ -55,7 +55,7 @@ def avrWinGraph():
         avrWinDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
         avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
         avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
-        plt.title("Średni stan stada dla bota "+str(i+1)+", w grach wygrywających")
+        plt.title("Średni stan stada dla bota "+str (int(df.iloc[0]['T'+str(i+1)]-1))+", w grach wygrywających")
         plt.show()
 
 def plotGameLength():
@@ -107,8 +107,8 @@ for n in range(numOfGames):
         if won(num+1):
             w_id = num+1
             T  = 'T' + str(num+1)
-            wins[int(df.iloc[0][T])]+=1
-            avrTimeToWin[int(df.iloc[0][T])]+=df.iloc[-1]['LP']
+            wins[int(df.iloc[0][T]-2)]+=1
+            avrTimeToWin[int(df.iloc[0][T]-2)]+=df.iloc[-1]['LP']
             WR = 'R' + str(w_id);
             WS = 'S' + str(w_id);
             WP = 'P' + str(w_id);
