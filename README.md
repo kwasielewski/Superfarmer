@@ -5,10 +5,10 @@ Superfarmer jest grą planszową, wymyśloną przez prof. Karola Borsuka w 1943 
 ## Jak uruchomić
 
 Żeby uruchomić grę należy wykonać w folderze Gierka polecenia
-'''
+```
 make host
 ./host
-'''
+```
 
 ### Wymagane biblioteki
 
@@ -18,10 +18,10 @@ Sama gra nie wymaga dodatkowych bibliotek, lecz w przygotowaniu znajdował się 
 apt-get install libgtkmm-3.0-dev
 ```
 A następnie w folderze Interfejs graficzny wykonać
-'''
+```
 make SFgrafika-main
 ./SFgrafika-main
-'''
+```
 
 Niestety nie udało nam się zintegrować zasadniczego programu z UI
 
@@ -34,10 +34,10 @@ Zasady gry znajdują się w osobnym pliku
 
 Żeby przeprowadzić testy efektywności poszczególnych botów, można uruchomić program w specjalnym trybie gier czterech botów. Dane z takich rozgrywek zostaną zapisane.
 By to zrobić, należy wykonać w folderze Gierka
-'''
+```
 make samo
 bash ./produkujDane
-'''
+```
 
 ## Jak stworzyć wykresy
 
@@ -45,7 +45,7 @@ Przygotowany skrypt w pythonie umożliwia stworzenie wykresów, przedstawiający
 W tytułach wykresów numery botów oznaczają ich typy:
 * 1-Królikowy
 * 2-Randomizowany
-* 3-High Roller
+* 3-High Roller/Koński
 * 4-Świński
 ### Uruchomienie skryptu
 
