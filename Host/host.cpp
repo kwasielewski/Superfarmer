@@ -29,7 +29,17 @@ long long testowybot(int *Stado[5], int id)
 {
   return 0LL;
 }
-void Koniec_Gry(int zwyciezca){return;} //wywołanie komunikatu o zakończeniu gry w GTK
+void Koniec_Gry(int zwyciezca, bool czyWygralCzlowiek){
+  if(zwyciezca == -1)
+    cout << "GRA ZAKOŃCZYŁA SIĘ W WYNIKU BŁĘDU!\n";
+  if(zwyciezca == 0)
+    cout << "DOSZŁO DO REMISU\n";
+  if(czyWygralCzlowiek)
+    cout << "WYGRAŁEŚ! GRATULACJE!\n";
+  if(!czyWygralCzlowiek && zwyciezca > 0)
+    cout << "PRZEGRAŁEŚ! WYGRAŁ GRACZ NUMER " << zwyciezca << '\n';
+  return;
+} //wywołanie komunikatu o zakończeniu gry w GTK
 void wymianaZatwierdzona(int *Stado[5]) {return;} //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 void wymianaOdrzucona(){
   cout << "Żądanie niepoprawne\n";
@@ -168,7 +178,7 @@ static bool czyWymianaPoprawna(int *Stado[5], int id, int Wymiana[9])
   }
 }
 
-static void stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
+static bool stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
 {
   //kostka1: 1 - lis, 2/4/6/8/10/12 - królik, 3 - owca, 5 - świnia, 7 - koń, 9 - owca, 11 - świnia
   //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
@@ -244,13 +254,16 @@ static void stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
     default:
       break;
   }
+  bool czy_zmiana = false; //czy następuje zmiana w stadzie
   //transfer zwierząt z głównego stada w wyniku rozmnażania (z zachowaniem możliwości zasobnych głównego stada)
   for(int i = 0; i < 5; i++){
     int x = Stado[id][i], y = Stado[0][i];
+    if(min((x + tab[i])/2, y) != 0)
+      czy_zmiana = true;
     Stado[id][i] += min((x + tab[i])/2, y);
     Stado[0][i] -= min((x + tab[i])/2, y);
   }
-  return;
+  return czy_zmiana;
 }
 
 static bool czyKoniecGry(int *Stado[5], int gracz)
@@ -316,11 +329,12 @@ void rozpocznijGre(bool czyCzlowiekGra)
   int *Usadzenie = usadzGraczy(czyCzlowiekGra);
   int **Stado = inicjujStada();
   int *Wymiana = new int[9];
-  int zwyciezca = -1, kostka1, kostka2; 
+  int zwyciezca = -1, kostka1, kostka2, cnt = 0; 
   long long kodWymiany = 0;
   for(int i = 0; i < 4; i++)
     cout << Usadzenie[i] << ((Usadzenie[i] == 1)? " TO JEST CZŁEK":"") << '\n';
   while(zwyciezca == -1){
+    bool czyzmiana = false;
     for(int i = 0; i < 4; i++){
       cout << i << ' ';
       kodWymiany = bots[i](Stado, i + 1);
@@ -328,7 +342,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
         konwersjaKoduWymiany(Wymiana, kodWymiany);
         if(!czyWymianaPoprawna(Stado, i + 1, Wymiana)){
           if(Usadzenie[i] != 1){
-            Koniec_Gry(-1); //zakończenie rozgrywki z powodu błędu bota
+            Koniec_Gry(-1, false); //zakończenie rozgrywki z powodu błędu bota
             return;
           }
           else{ //wyświetlenie błędu żądania wymiany złożonej przez gracza i ponowienie możliwości wymiany
@@ -339,6 +353,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
         }
         else //wymiana poprawna, dokonanie zmian w stadach
         {
+          czyzmiana = true;
           int kupno = (Wymiana[0] == 1)?1:-1;
           Stado[i + 1][Wymiana[1]] += kupno;
           Stado[0][Wymiana[1]] -= kupno;
@@ -352,7 +367,7 @@ void rozpocznijGre(bool czyCzlowiekGra)
       //rzut kostką, zmiana w stadzie wynikająca z rzutu
       kostka1 = 1 + losuj()%12;
       kostka2 = 1 + losuj()%12;
-      stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
+      czyzmiana |= stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
       wyswietlWynikRzutu(Stado, i + 1, kostka1, kostka2);
       //TUTAJ ZAPIS DO PLIKU
       if(czyKoniecGry(Stado, i + 1)){
@@ -360,13 +375,21 @@ void rozpocznijGre(bool czyCzlowiekGra)
         break;
       }
     }
+    if(!czyzmiana)
+      cnt++;
+    else
+      cnt = 0;
+    if(cnt > 6){ //liczba rund bez zmiany stanu --> remis
+      zwyciezca = 0; //remis
+      break;
+    }
   }
+  Koniec_Gry(zwyciezca, ((Usadzenie[zwyciezca - 1] == 1)?true:false));
   for(int i = 0; i < 5; i++) //czyszczenie pamięci ze sterty
     delete[] Stado[i];
   delete[] Stado;
   delete[] Usadzenie;
   delete[] Wymiana;
-  Koniec_Gry(zwyciezca);
 }
 
 int main() //w wersji release nie będzie tej funkcji - służy testowaniu hosta
