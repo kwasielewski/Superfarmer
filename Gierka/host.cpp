@@ -401,12 +401,12 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
       kostka2 = 1 + losowanko()%12;
       czyzmiana |= stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
       wyswietlWynikRzutu(Stado, i + 1, kostka1, kostka2);
-      zapiszRunde(zapisDoPliku, Stado, nrrundy);
       if(czyKoniecGry(Stado, i + 1)){
         zwyciezca = i + 1;
         break;
       }
     }
+    zapiszRunde(zapisDoPliku, Stado, nrrundy);
     if(!czyzmiana)
       cnt++;
     else
