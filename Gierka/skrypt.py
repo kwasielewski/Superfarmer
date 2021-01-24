@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import math
 
-plotActive = False
+plotActive = True
 
 
 def won(i):
@@ -27,7 +27,7 @@ def winnerGraph():
     df.plot(kind='line', x='LP', y=WP, color='pink', ax=ax, label = 'Świnie')
     df.plot(kind='line', x='LP', y=WC, color='black', ax=ax, label = 'Krowy')
     df.plot(kind='line', x='LP', y=WH, color='brown', ax=ax, label ='Konie')
-
+    plt.title("Wykres zwycięzcy")
     plt.show()
 
 def avrGraph():
@@ -41,6 +41,7 @@ def avrGraph():
         avrDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
         avrDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
         avrDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
+        plt.title("Średni stan stada dla bota " + str(i+1))
         plt.show()
 
 def avrWinGraph():
@@ -54,12 +55,14 @@ def avrWinGraph():
         avrWinDF.plot(kind='line',  y=5*i+2, color='pink', ax=ax, label = 'Świnie')
         avrWinDF.plot(kind='line',  y=5*i+3, color='black', ax=ax, label = 'Krowy')
         avrWinDF.plot(kind='line',  y=5*i+4, color='brown', ax=ax, label = 'Konie')
+        plt.title("Średni stan stada dla bota "+str(i+1)+", w grach wygrywających")
         plt.show()
 
 def plotGameLength():
     #if plotActive==False:
     #    return
     plt.plot(gameLength)
+    plt.title("Gry skończne w przeciągu x tur")
     plt.ylabel('Liczba gier')
     plt.xlabel('Liczba tur')
     plt.show()
@@ -86,7 +89,7 @@ noWinner = 0
 
 for n in range(numOfGames):
     #print(n)
-    path = './dane'+str(n+1)+'.csv'
+    path = './Dane/dane'+str(n+1)+'.csv'
     df = pd.read_csv(path)
     #print(df)
 
@@ -135,13 +138,13 @@ print(avrTimeToWin)
 avrDF = pd.DataFrame(0.0, index=range(int(minLenOfGame)), columns=range(5*typesCount))
 
 for game in range(numOfGames):
-    path = './dane'+str(game+1)+'.csv'
+    path = './Dane/dane'+str(game+1)+'.csv'
     df = pd.read_csv(path)
     for n in range(int(minLenOfGame)):#int(df.iloc[-1]['LP'])):
         #avrDF[0][n] = n+1
         for m in range(20):
             botType = 'T' + str(int(m/5)+1)
-            op = columnNames[m%5]+ str(int(df.iloc[0][botType])+1)
+            op = columnNames[m%5]+ str(int(df.iloc[0][botType]))
             #print(df.iloc[n][op])
             avrDF[m][n]+=df.iloc[n][op]
 
@@ -153,14 +156,14 @@ for n in range(1, int(minLenOfGame)):
 
 #wypisanie średniego przebiegu rozgrywki
 
-print(avrDF)
+#print(avrDF)
 avrGraph()
 
 avrWinDF = pd.DataFrame(0.0, index = range(int(minLenOfGame)), columns=range(5*typesCount))
 
 for game in range(numOfGames):
     #print(n)
-    path = './dane'+str(game+1)+'.csv'
+    path = './Dane/dane'+str(game+1)+'.csv'
     df = pd.read_csv(path)
 
     for num in range(4):
@@ -169,7 +172,7 @@ for game in range(numOfGames):
                 #avrDF[0][n] = n+1
                 for m in range(20):
                     botType = 'T' + str(int(m/5)+1)
-                    op = columnNames[m%5]+ str(int(df.iloc[0][botType])+1)
+                    op = columnNames[m%5]+ str(int(df.iloc[0][botType]))
                     #print(df.iloc[n][op])
                     avrWinDF[m][n]+=df.iloc[n][op]
             break
@@ -182,16 +185,16 @@ for n in range(1, int(minLenOfGame)):
         else:
             avrWinDF[m][n]=float(avrWinDF[m][n]/wins[int(m/5)])
 
-print(avrWinDF)
+#print(avrWinDF)
 avrWinGraph()
 
 #maxGameLength
 
 gameLength = np.zeros(int(maxLenOfGame)+1)
 for game in range(numOfGames):
-    path = './dane'+str(game+1)+'.csv'
+    path = './Dane/dane'+str(game+1)+'.csv'
     df = pd.read_csv(path)
     gameLength[int(df.iloc[-1]['LP'])] += 1
 
-print(gameLength)
+#print(gameLength)
 plotGameLength()

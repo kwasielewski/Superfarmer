@@ -482,10 +482,10 @@ int main(int argc, char *argv[]) //w wersji release nie bÄ™dzie tej funkcji - sÅ
   //srand(getpid() + time(NULL));
   string s;
   if(argc < 2)
-    s = "dane1.csv";
+    s = "./Dane/dane1.csv";
   else{
     s = argv[1];  
-    s =s +".csv";
+    s ="./Dane/"s +".csv";
   }
   rozpocznijGre(true, s);
 }
