@@ -144,7 +144,7 @@ for game in range(numOfGames):
         #avrDF[0][n] = n+1
         for m in range(20):
             botType = 'T' + str(int(m/5)+1)
-            op = columnNames[m%5]+ str(int(df.iloc[0][botType]))
+            op = columnNames[m%5]+ str(int(df.iloc[0][botType]-1))
             #print(df.iloc[n][op])
             avrDF[m][n]+=df.iloc[n][op]
 
@@ -172,7 +172,7 @@ for game in range(numOfGames):
                 #avrDF[0][n] = n+1
                 for m in range(20):
                     botType = 'T' + str(int(m/5)+1)
-                    op = columnNames[m%5]+ str(int(df.iloc[0][botType]))
+                    op = columnNames[m%5]+ str(int(df.iloc[0][botType]-1))
                     #print(df.iloc[n][op])
                     avrWinDF[m][n]+=df.iloc[n][op]
             break

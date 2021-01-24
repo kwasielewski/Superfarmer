@@ -33,18 +33,18 @@ static void zapiszRunde(ofstream &plik, int *Stado[5], int nrrundy)
 static void WypiszPlansze(int *Stado[5], int czlowiek)
 { //funkcja do testowania hosta
   for(int i = 0; i < 5; i++){
-    for(int j = 0; j < 7; j++)
-      cout << Stado[i][j] << ' ';
-    if(i == czlowiek)
-      cout << " <== TO TWOJE STADO";
-    cout << '\n';
+    //for(int j = 0; j < 7; j++)
+      //cout << Stado[i][j] << ' ';
+    //if(i == czlowiek)
+      //cout << " <== TO TWOJE STADO";
+    //cout << '\n';
   }
 }
 
 long long dokonajWymiany(int *Stado[5], int id)
 {//wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu), funkcja do testowania hosta
   WypiszPlansze(Stado, id);
-  cout << "Podaj kod wymiany.\n";
+  //cout << "Podaj kod wymiany.\n";
   long long kod;
   cin >> kod;
   return kod;
@@ -56,18 +56,18 @@ long long testowybot(int *Stado[5], int id)
 }
 void Koniec_Gry(int zwyciezca, bool czyWygralCzlowiek){
   if(zwyciezca == -1)
-    cout << "GRA ZAKOŃCZYŁA SIĘ W WYNIKU BŁĘDU!\n";
+    //cout << "GRA ZAKOŃCZYŁA SIĘ W WYNIKU BŁĘDU!\n";
   if(zwyciezca == 0)
-    cout << "DOSZŁO DO REMISU\n";
+    //cout << "DOSZŁO DO REMISU\n";
   if(czyWygralCzlowiek)
-    cout << "WYGRAŁEŚ! GRATULACJE!\n";
+    //cout << "WYGRAŁEŚ! GRATULACJE!\n";
   if(!czyWygralCzlowiek && zwyciezca > 0)
-    cout << "PRZEGRAŁEŚ! WYGRAŁ GRACZ NUMER " << zwyciezca << '\n';
+    //cout << "PRZEGRAŁEŚ! WYGRAŁ GRACZ NUMER " << zwyciezca << '\n';
   return;
 } //wywołanie komunikatu o zakończeniu gry w GTK, w obecnej postaci funkcja do testowania hosta
 void wymianaZatwierdzona(int *Stado[5]) {return;} //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 void wymianaOdrzucona(){
-  cout << "Żądanie niepoprawne\n";
+  //cout << "Żądanie niepoprawne\n";
   return;} //wyświetlenie komunikatu o błędności żądania, freeze do czasu zamknięcia okienka
 void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
 { //funkcja w wersji do testowania hosta
@@ -76,7 +76,7 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
   if(kostka1 % 2 == 0)
     kostka1 = 2;
   if(kostka2 % 2 == 1)
-    kostka2 = 1;  
+    kostka2 = 1;
   switch (kostka1)
   {
     case 1:
@@ -106,7 +106,7 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
   //kostka2: 1/3/5/7/9/11 - królik, 2 - krowa, 4 - owca, 6 - świnia, 8 - owca, 10 - wilk, 12 - owca
   switch(kostka2)
   {
-    case 1: 
+    case 1:
       dwa = "królika";
       break;
     case 2:
@@ -130,7 +130,7 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
     default:
       break;
   }
-  cout << "Gracz numer " << id << " wyrzucił " << jeden << " i " << dwa << '\n';
+  //cout << "Gracz numer " << id << " wyrzucił " << jeden << " i " << dwa << '\n';
   return;
 } //wyświetlenie komunikatu o wyniku rzutu
 
@@ -159,15 +159,15 @@ static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
   Wymiana[1] = kodWymiany % (1LL << 3); //id dużego zwierzęcia
   kodWymiany /= (1LL << 3);
   Wymiana[0] = kodWymiany & 1LL;
-  cout << "WYMIANA: ";
+  //cout << "WYMIANA: ";
   for(int i = 0; i <= 8; i++)
-    cout << Wymiana[i] << ' ';
-  cout << '\n';
+    //cout << Wymiana[i] << ' ';
+  //cout << '\n';
   return;
 }
 
 static bool czyWymianaPoprawna(int *Stado[5], int id, int Wymiana[9])
-//funkcja sprawdza poprawność żądań z tabelą wymian i dostosowuje liczby do możliwości stada głównego 
+//funkcja sprawdza poprawność żądań z tabelą wymian i dostosowuje liczby do możliwości stada głównego
 //tj. może pogorszyć liczby z żądania gracza, lecz ten miał pełną informację na temat zasobności stada głównego żądając wymiany (wiedział ile może dostać)
 {
   int krolikojednostki[7] = {1, 6, 12, 36, 72, 6, 36}; //wartości zwierząt w przeliczeniu na króliki
@@ -246,7 +246,7 @@ static bool stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
   }
   switch(kostka2)
   {
-    case 1: 
+    case 1:
       tab[0]++;
       break;
     case 2:
@@ -315,10 +315,10 @@ static int* usadzGraczy(bool CzyCzlowiekGra)
   for(int i = 0; i < 4; i++)
     switch (Usadzenie[i])
     {
-      case 1: 
+      case 1:
         bots[i] = dokonajWymiany;
         break;
-      case 2: 
+      case 2:
         bots[i] = krolikowy;
         break;
       case 3:
@@ -359,12 +359,12 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
   int **Stado = inicjujStada();
   int *Wymiana = new int[9];
   inicjujZapisDoPliku(zapisDoPliku, Usadzenie);
-  int zwyciezca = -1, kostka1, kostka2, cnt = 0, nrrundy = 0, czlowiek = -1; 
+  int zwyciezca = -1, kostka1, kostka2, cnt = 0, nrrundy = 0, czlowiek = -1;
   long long kodWymiany = 0;
   for(int i = 0; i < 4; i++)
     if(Usadzenie[i] == 1)
       czlowiek = i + 1;
-  cout << "Jesteś graczem numer: " << czlowiek << '\n';
+  //cout << "Jesteś graczem numer: " << czlowiek << '\n';
   while(zwyciezca == -1){
     bool czyzmiana = false;
     nrrundy++;
@@ -432,8 +432,9 @@ int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - s�
   if(argc < 2)
     s = "dane.csv";
   else{
-    s = argv[1];  
-    s =s +".csv";
+    s = argv[1];
+    s ="./Dane/dane"+s +".csv";
+    //cout << s << endl;
   }
   rozpocznijGre(false, s);
 }

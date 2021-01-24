@@ -49,7 +49,7 @@ long long int swinski(int* s[5], int id){
     	}
 
     }else if((presence&8)==8){
-		cout << "wynik " << (presence&8) << endl; 
+		//cout << "wynik " << (presence&8) << endl; 
     	state = 3;
     }else if((presence&4)==4){
     	state = 2;
