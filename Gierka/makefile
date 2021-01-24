@@ -1,19 +1,21 @@
 
-  CC = g++
+ CC = g++
  
 
-  CXXFLAGS  = -g 
+ CXXFLAGS  = -g 
   
   
 
 	
 	
 
-  #TARGET = host
+ #TARGET = host
  	
-  all: $(TARGET)
+ all: host samo
  
-  $(TARGET): $(TARGET).cpp
-	$(CC) $(CXXFLAGS) -o $(TARGET) $(TARGET).cpp botKW.cpp gen.cpp botjk.cpp botjp.cpp functions.cpp botMS.cpp
-  clean:
-	$(RM) $(TARGET)
+ host: 
+	$(CC) $(CXXFLAGS) -o host host.cpp botKW.cpp gen.cpp botjk.cpp botjp.cpp functions.cpp botMS.cpp
+ samo: 
+	$(CC) $(CXXFLAGS) -o samo samo.cpp botKW.cpp gen.cpp botjk.cpp botjp.cpp functions.cpp botMS.cpp
+ clean:
+	$(RM) host samo
