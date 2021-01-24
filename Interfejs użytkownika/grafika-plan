@@ -1,0 +1,32 @@
+======== Spotkanie 4 stycznia ========
+
+Co powinno znaleźć się w głównym oknie?
+ - instrukcja/jakieś menu
+ - ikonki różnych zwierząt (króliki, owce, świnie, krowy, konie, mały pies, duży pies, wilk, lis) wraz z ich liczbą u każdego z graczy
+ - awatary innych graczy
+ - przycisk do wymiany z bankiem (może wyświetlimy też kursy wymiany?)
+ - przycisk do "rzutu kostką" i wyświetlanie wyniku takiego rzutu
+ - ewentualnie informacja o końcu rozgrywki i o zwycięzcy
+
+Jakie zdarzenia musimy potem umieć obsłużyć?
+ - update liczby zwierząt w zależności od tego co wypadło na "kostce"
+ - zrealizowanie wymiany i update liczby zwierząt
+ - wyświetlenie błędu, jeżeli wymiana, której chcemy dokonać jest niemożliwa (za mało zwierząt danego gatunku na wymianę itp.)
+
+Dodatkowe uwagi:
+ - w czasie jednej wymiany możemy uzyskać tylko JEDNO zwierzę, czyli usunąć okno "ile?" w oknie "Wymiana"
+ - jakieś urocze ilustracje dla poszczególnych zwierząt
+
+
+======== Spotkanie 13 stycznia ========
+
+Główne pytanie: jak chcemy utrzymywać planszę?
+ - dwuwymiarowa tablica (5 x 7)
+ - utworzona będzie w pamięci w pliku z grafiką
+ - jedynie wskaźnik na nią (czy coś takiego) będzie przekazywany do hosta jako argument odpowiednich funkcji
+ 
+ Inne:
+  - w oknie "Wymiana" trzeba dodać wybór kupno/sprzedaż i pola do wpisania ile których zwierząt gracz chce przekazać bądź uzyskać - więcej GTK_COMBO_BOX
+  - te szczegółowe informacje trzeba przekazywać wraz z tablicą do hosta
+  - wydzielić miejsce na komunikaty o tym co wypadło na kostkach gracza
+  - co właściwie oznacza koniec gry?
