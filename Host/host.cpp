@@ -8,6 +8,8 @@ extern long long krolikowy(int *Stado[5], int id);
 extern long long randomizowany(int *Stado[5], int id);
 extern long long botQn(int *Stado[5], int id); //AKA usainbolt, highdollar
 extern long long swinski(int *Stado[5], int id);
+extern void slosuj();
+extern int losowanko();
 long long (*bots[4])(int*[5], int); //wskaźniki na boty
 
 static void inicjujZapisDoPliku(ofstream &plik, int Usadzenie[4])
@@ -131,10 +133,10 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
   return;
 } //wyświetlenie komunikatu o wyniku rzutu
 
-int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
-{
-  return rand();
-}
+// int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
+// {
+//   return rand();
+// }
 
 static void konwersjaKoduWymiany(int Wymiana[9], long long kodWymiany)
 //funkcja zwraca liczbę zwierząt do wymiany bez oglądania się na możliwości stada
@@ -349,6 +351,7 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
 {
   ofstream zapisDoPliku;
   zapisDoPliku.open(nazwaPlikuDoZapisu);
+  slosuj();
   int *Usadzenie = usadzGraczy(czyCzlowiekGra);
   int **Stado = inicjujStada();
   int *Wymiana = new int[9];
@@ -391,8 +394,8 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
         }
       }
       //rzut kostką, zmiana w stadzie wynikająca z rzutu
-      kostka1 = 1 + losuj()%12;
-      kostka2 = 1 + losuj()%12;
+      kostka1 = 1 + losowanko()%12;
+      kostka2 = 1 + losowanko()%12;
       czyzmiana |= stadoPoRzucie(Stado, i + 1, kostka1, kostka2);
       wyswietlWynikRzutu(Stado, i + 1, kostka1, kostka2);
       zapiszRunde(zapisDoPliku, Stado, nrrundy);
@@ -421,7 +424,7 @@ void rozpocznijGre(bool czyCzlowiekGra, string nazwaPlikuDoZapisu)
 
 int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - służy testowaniu hosta
 {
-  srand(getpid() + time(NULL));
+  //srand(getpid() + time(NULL));
   string s;
   if(argc < 2)
     s = "przebieggry.csv";
