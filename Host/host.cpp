@@ -3,6 +3,13 @@
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
+
+extern long long krolikowy(int *Stado[5], int id);
+extern long long randomizowany(int *Stado[5], int id);
+extern long long botQn(int *Stado[5], int id); //AKA usainbolt, highdollar
+extern long long swinski(int *Stado[5], int id);
+long long (*bots[4])(int*[5], int); //wskaźniki na boty
+
 static void inicjujZapisDoPliku(ofstream &plik, int Usadzenie[4])
 {
   plik << "LP,R1,S1,P1,C1,H1,d1,D1,R2,S2,P2,C2,H2,d2,D2,R3,S3,P3,C3,H3,d3,D3,R4,S4,P4,C4,H4,d4,D4,T1,T2,T3,T4\n0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,";
@@ -10,6 +17,7 @@ static void inicjujZapisDoPliku(ofstream &plik, int Usadzenie[4])
     plik << Usadzenie[i] << ',';
   plik << Usadzenie[3] << '\n';
 }
+
 static void zapiszRunde(ofstream &plik, int *Stado[5], int nrrundy)
 {
   plik << nrrundy << ',';
@@ -18,6 +26,7 @@ static void zapiszRunde(ofstream &plik, int *Stado[5], int nrrundy)
       plik << Stado[i][j] << ',';
   plik << ",,,\n";
 }
+
 static void WypiszPlansze(int *Stado[5], int czlowiek)
 { //funkcja do testowania hosta
   for(int i = 0; i < 5; i++){
@@ -29,10 +38,6 @@ static void WypiszPlansze(int *Stado[5], int czlowiek)
   }
 }
 
-extern long long krolikowy(int *Stado[5], int id);
-extern long long randomizowany(int *Stado[5], int id);
-extern long long usainbolt(int *Stado[5], int id);
-extern long long swinski(int *Stado[5], int id);
 long long dokonajWymiany(int *Stado[5], int id)
 {//wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu), funkcja do testowania hosta
   WypiszPlansze(Stado, id);
@@ -125,7 +130,6 @@ void wyswietlWynikRzutu(int *Stado[5], int id, int kostka1, int kostka2)
   cout << "Gracz numer " << id << " wyrzucił " << jeden << " i " << dwa << '\n';
   return;
 } //wyświetlenie komunikatu o wyniku rzutu
-long long (*bots[4])(int*[5], int); //wskaźniki na boty
 
 int losuj() //funkcja do zastąpienia funkcją z modułu losującego - do testowania hosta
 {
@@ -310,16 +314,16 @@ static int* usadzGraczy(bool CzyCzlowiekGra)
         bots[i] = dokonajWymiany;
         break;
       case 2: 
-        bots[i] = testowybot; //krolikowy;
+        bots[i] = krolikowy;
         break;
       case 3:
-        bots[i] = testowybot; //randomizowany;
+        bots[i] = randomizowany;
         break;
       case 4:
-        bots[i] = testowybot; //usainbolt;
+        bots[i] = botQn;
         break;
       case 5:
-        bots[i] = testowybot; //swinski;
+        bots[i] = swinski;
         break;
       default:
         break;
@@ -425,5 +429,5 @@ int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - s�
     s = argv[1];  
     s+=".csv";
   }
-  rozpocznijGre(false, s);
+  rozpocznijGre(true, s);
 }
