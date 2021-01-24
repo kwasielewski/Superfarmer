@@ -1,5 +1,6 @@
+//Mateusz Gieroba
 #include <bits/stdc++.h>
-#include <unistd.h> //do uzyskania ziarna na etapie testowym hosta
+//#include <unistd.h> //do uzyskania ziarna na etapie testowym hosta
 using namespace std;
 //Program ten będzie kompilowany wraz z głównym programem zawierającym interfejs w GTK. Wszelkie funkcje hosta będą
 //wywoływane przez główny program do obsługi przebiegu rozgrywki
@@ -50,7 +51,7 @@ long long dokonajWymiany(int *Stado[5], int id)
 }
 
 long long testowybot(int *Stado[5], int id)
-{
+{ //funkcja do testowania hosta
   return 0LL;
 }
 void Koniec_Gry(int zwyciezca, bool czyWygralCzlowiek){
@@ -63,7 +64,7 @@ void Koniec_Gry(int zwyciezca, bool czyWygralCzlowiek){
   if(!czyWygralCzlowiek && zwyciezca > 0)
     cout << "PRZEGRAŁEŚ! WYGRAŁ GRACZ NUMER " << zwyciezca << '\n';
   return;
-} //wywołanie komunikatu o zakończeniu gry w GTK
+} //wywołanie komunikatu o zakończeniu gry w GTK, w obecnej postaci funkcja do testowania hosta
 void wymianaZatwierdzona(int *Stado[5]) {return;} //wyświetlenie informacji o zaakceptowaniu wymiany oraz aktualizacja planszy
 void wymianaOdrzucona(){
   cout << "Żądanie niepoprawne\n";
