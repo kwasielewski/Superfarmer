@@ -80,5 +80,3 @@ long long int randomizowany(int* s[5], int id){
 
 
 
-
-
