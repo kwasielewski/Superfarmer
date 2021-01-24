@@ -43,7 +43,7 @@ long long int possible(long long int decision, int* s[5]){
         return 0;
     }
     //jeśli się nie da kupić bo nie ma to wyzeruj
-    if(code[1] == 1 && s[0][code[2]+1]==0){
+    if(code[1] == 1 && s[0][code[2]]==0){
         return 0;
     }
     //jeśli się sprzedaje to wyzeruj
