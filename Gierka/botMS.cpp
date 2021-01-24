@@ -2,7 +2,6 @@
 #include "functions.h"
 using namespace std;
 
-
 extern int losowanko();
 
 long long int randomizowany(int* s[5], int id){
