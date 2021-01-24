@@ -7,7 +7,6 @@ To jest program do zarządzania interfejsem użytkownika do gry Superfarmer.
 Znajdą się tu opisy nastêpujących okien:
  > główne okno (informacje o stanie plansz wszystkich graczy):
     - tabela GTK_GRID?
-    - obrazki reprezentujące różne zwierzęta i innych graczy
     - przycisk, który umożliwia wymianę
     - przycisk do "rzutu kostką"
     - miejsce, gdzie wyświetli się wynik tego rzutu
@@ -19,9 +18,16 @@ Znajdą się tu opisy nastêpujących okien:
     - przycisk do anulowania wymiany
  > ewentualny pop-up z nformacją o błędzie (czy da się ustawić czerwone tło?)
     - gracz ma niewystaczającą liczbę zwierząt na wymianę
-    - gracz podał informacje, które nie pokrywają się z kursami wymiany
     - informacja o końcu gry (i kto wygrał rozgrywkę)
 */
+
+struct element_tabeli
+{
+    const char *opis;
+    int pozycja_kolumna, pozycja_wiersz;
+};
+element_tabeli tabela_wewnatrz[10][10];
+GtkWidget *tabela;
 
 void Dokonaj_Wymiany();
 void Wymiana_Zatwierdzona(int *wybor);
@@ -29,9 +35,11 @@ void Blad_Wymiana_Niemozliwa();
 void Rzut_Kostka();
 void Koniec_Gry();
 
+GtkWidget *okno_wymiana;
+
 void Dokonaj_Wymiany()
 {
-    GtkWidget *okno_wymiana = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    okno_wymiana = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(okno_wymiana), "Wymiana");
     gtk_window_set_position(GTK_WINDOW(okno_wymiana), GTK_WIN_POS_CENTER);
     gtk_container_set_border_width(GTK_CONTAINER(okno_wymiana), 30);
@@ -96,6 +104,18 @@ void Dokonaj_Wymiany()
     gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_koni);
     wybor_gracza[6] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_koni));
 
+    GtkWidget *ile_malych_psow = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_malych_psow), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_malych_psow), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_malych_psow);
+    wybor_gracza[7] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_malych_psow));
+
+    GtkWidget *ile_duzych_psow = gtk_combo_box_text_new();
+    for (int i = 0; i < 7; i++) gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(ile_duzych_psow), liczby[i]);
+    gtk_combo_box_set_active(GTK_COMBO_BOX(ile_duzych_psow), 0);
+    gtk_container_add(GTK_CONTAINER(ile_zwierzat), ile_duzych_psow);
+    wybor_gracza[8] = gtk_combo_box_get_active(GTK_COMBO_BOX(ile_duzych_psow));
+
     GtkWidget *przycisk_zatwierdz = gtk_button_new_with_label("Zatwierdź");
     gtk_container_add(GTK_CONTAINER(menu), przycisk_zatwierdz);
     g_signal_connect (G_OBJECT(przycisk_zatwierdz), "clicked", G_CALLBACK(Wymiana_Zatwierdzona), wybor_gracza); //wywołać z argumentem - wybrana opcja
@@ -120,12 +140,24 @@ void Wymiana_Zatwierdzona(int *wybor) //wybrane zwierzę jako argument
 
     ///wybor[2...8] = ile każdego z nich
 
-    bool czy_wymiana_mozliwa = false; //testowe wywołanie (do zmiany później)
+    bool czy_wymiana_mozliwa = true; //testowe wywołanie (do zmiany później) = czyWymianaPoprawna()
 
     if (czy_wymiana_mozliwa)
     {
         ///tutaj update
         ///ta funkcja powinna automatycznie zamknąć okno "Wymiana"
+
+        for (int i = 1; i < 8; i++)
+        {
+            for (int j = 1; j < 5; j++)
+            {
+                GtkLabel *modyfikowany_opis = (GtkLabel*)gtk_grid_get_child_at(GTK_GRID(tabela), i, j);
+                gtk_label_set_text(modyfikowany_opis, tabela_wewnatrz[i][j].opis);
+            }
+        }
+
+        gtk_widget_destroy(okno_wymiana);
+
     }
     else Blad_Wymiana_Niemozliwa();
 }
@@ -158,6 +190,15 @@ void Rzut_Kostka() //wskaźnik na tabelę/okno główne jako argument?
     ///wyświetlić komunikat o wyniku losowania w oknie głównym
     ///musi potem nastąpić update tabeli w glowny_wewnatrz
     ///stąd powinna też przyjść informacja o ewentualnym końcu rozgrywki (wywołanie void Koniec_Gry())
+
+    for (int i = 1; i < 8; i++)
+    {
+        for (int j = 1; j < 5; j++)
+        {
+            GtkLabel *modyfikowany_opis = (GtkLabel*)gtk_grid_get_child_at(GTK_GRID(tabela), i, j);
+            gtk_label_set_text(modyfikowany_opis, tabela_wewnatrz[i][j].opis);
+        }
+    }
 }
 
 void Koniec_Gry()
@@ -178,7 +219,7 @@ void Koniec_Gry()
 
     GtkWidget *info_o_wyniku = gtk_label_new(NULL);
     if (czy_wygrales) gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Wygrałeś! Gratulacje!");
-    else gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Przegrałeś, Synu!");
+    else gtk_label_set_text(GTK_LABEL(info_o_wyniku), "Przegrałeś");
     gtk_container_add(GTK_CONTAINER(okg_wewnatrz), info_o_wyniku);
 
     GtkWidget *przycisk_ok = gtk_button_new_with_label("OK");
@@ -200,46 +241,67 @@ int main(int argc, char *argv[])
     GtkWidget *glowny_wewnatrz;
     glowny_wewnatrz = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 
-    GtkWidget *tabela = gtk_grid_new();
+    tabela = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(tabela), 3);
     gtk_grid_set_row_homogeneous(GTK_GRID(tabela), TRUE);
     gtk_grid_set_column_spacing(GTK_GRID(tabela), 3);
     gtk_grid_set_column_homogeneous(GTK_GRID(tabela), TRUE);
 
-    struct element_tabeli
-    {
-        const char *opis;
-        int pozycja_kolumna, pozycja_wiersz;
-    };
+    tabela_wewnatrz[1][0].opis = "króliki";
+    tabela_wewnatrz[2][0].opis = "owce";
+    tabela_wewnatrz[3][0].opis = "świnie";
+    tabela_wewnatrz[4][0].opis = "krowy";
+    tabela_wewnatrz[5][0].opis = "konie";
+    tabela_wewnatrz[6][0].opis = "małe psy";
+    tabela_wewnatrz[7][0].opis = "duże psy";
 
-    element_tabeli tabela_wewnatrz[] = {
-    {"", 0, 1},              {"króliki", 1, 1}, {"owce", 2, 1}, {"świnie", 3, 1}, {"krowy", 4, 1}, {"konie", 5, 1}, {"maly pies", 6, 1}, {"duzy pies", 7, 1},
-    {"bot królikowy", 0, 2}, {"0", 1, 2},       {"0", 2, 2},    {"0", 3, 2},      {"0", 4, 2},     {"0", 5, 2},     {"0", 6, 2},         {"0", 7, 2}
-    //itd.
-    };
-    ///póki co są tu same zera jako tekst, ale w ich miejsce powinny pojawic się informacje o innych graczach od hosta (typ danych int lub inny - do ustalenia)
-    ///tablica powinna być dwuwymiarowa?
-
-    for (int i = 0; i < 16; i++) //wersja testowa wczytywania
+    for (int i = 1; i < 8; i++)
     {
+        tabela_wewnatrz[i][0].pozycja_kolumna = i;
+        tabela_wewnatrz[i][0].pozycja_wiersz = 0;
         GtkWidget *komorka = gtk_label_new(NULL);
-        gtk_label_set_text(GTK_LABEL(komorka), tabela_wewnatrz[i].opis);
-        gtk_grid_attach(GTK_GRID(tabela), komorka, tabela_wewnatrz[i].pozycja_kolumna, tabela_wewnatrz[i].pozycja_wiersz, 1, 1);
+        gtk_label_set_text(GTK_LABEL(komorka), tabela_wewnatrz[i][0].opis);
+        gtk_grid_attach(GTK_GRID(tabela), komorka, tabela_wewnatrz[i][0].pozycja_kolumna, tabela_wewnatrz[i][0].pozycja_wiersz, 1, 1);
     }
 
-    ///trzeba jeszcze zmodyfikować obecny układ kontrolek w oknie głównym, aby odzwierciedlał rysunki (grafika-plan.pdf)
+    tabela_wewnatrz[0][1].opis = "Gracz 1";
+    tabela_wewnatrz[0][2].opis = "Gracz 2";
+    tabela_wewnatrz[0][3].opis = "Gracz 3";
+    tabela_wewnatrz[0][4].opis = "Gracz 4";
+
+    for (int i = 1; i < 5; i++)
+    {
+        tabela_wewnatrz[0][i].pozycja_kolumna = 0;
+        tabela_wewnatrz[0][i].pozycja_wiersz = i;
+        GtkWidget *komorka = gtk_label_new(NULL);
+        gtk_label_set_text(GTK_LABEL(komorka), tabela_wewnatrz[0][i].opis);
+        gtk_grid_attach(GTK_GRID(tabela), komorka, tabela_wewnatrz[0][i].pozycja_kolumna, tabela_wewnatrz[0][i].pozycja_wiersz, 1, 1);
+    }
+
+    for (int i = 1; i < 8; i++)
+    {
+        for (int j = 1; j < 5; j++)
+        {
+            tabela_wewnatrz[i][j].opis = "0";
+            tabela_wewnatrz[i][j].pozycja_kolumna = i;
+            tabela_wewnatrz[i][j].pozycja_wiersz = j;
+            GtkWidget *komorka = gtk_label_new(NULL);
+            gtk_label_set_text(GTK_LABEL(komorka), tabela_wewnatrz[i][j].opis);
+            gtk_grid_attach(GTK_GRID(tabela), komorka, tabela_wewnatrz[i][j].pozycja_kolumna, tabela_wewnatrz[i][j].pozycja_wiersz, 1, 1);
+        }
+    }
+
     gtk_container_add(GTK_CONTAINER(glowny_wewnatrz), tabela);
 
     GtkWidget *przycisk_wymiana = gtk_button_new_with_label("Chcę dokonać wymiany");
     gtk_container_add(GTK_CONTAINER(glowny_wewnatrz), przycisk_wymiana);
-    g_signal_connect (G_OBJECT(przycisk_wymiana), "clicked", G_CALLBACK(Dokonaj_Wymiany), NULL);
+    g_signal_connect (G_OBJECT(przycisk_wymiana), "clicked", G_CALLBACK(Dokonaj_Wymiany), tabela_wewnatrz);
 
     GtkWidget *przycisk_rzut = gtk_button_new_with_label("Rzut kostką");
     gtk_container_add(GTK_CONTAINER(glowny_wewnatrz), przycisk_rzut);
-    //g_signal_connect (G_OBJECT(przycisk_rzut), "clicked", G_CALLBACK(Rzut_Kostka), NULL); //tablica jako argument
+    g_signal_connect (G_OBJECT(przycisk_rzut), "clicked", G_CALLBACK(Rzut_Kostka), NULL); //tablica jako argument
     gtk_container_add(GTK_CONTAINER(glowny), glowny_wewnatrz);
 
     gtk_widget_show_all(glowny);
     gtk_main();
 }
-
