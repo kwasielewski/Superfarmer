@@ -435,5 +435,5 @@ int main(int argc, char *argv[]) //w wersji release nie bÄ™dzie tej funkcji - sÅ
     s = argv[1];  
     s =s +".csv";
   }
-  rozpocznijGre(true, s);
+  rozpocznijGre(false, s);
 }
