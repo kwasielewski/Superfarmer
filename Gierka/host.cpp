@@ -44,10 +44,62 @@ static void WypiszPlansze(int *Stado[5], int czlowiek)
 long long dokonajWymiany(int *Stado[5], int id)
 {//wywołanie ludzkiego gracza do podjęcia deyzji o wymianie (początek cyklu), funkcja do testowania hosta
   WypiszPlansze(Stado, id);
+  long long output;
+  reset:
+  cout << "Czy chcesz podjąć wymianę 1-Tak/0-Nie\n";
+  cin >>output;
+  if(output==0){
+  	return 0;
+  }
+  output =0;
+  int buy,  big,  rabbit,  sheep,  pig,  cow,  horse,  sDog, bDog;
   cout << "Podaj kod wymiany.\n";
-  long long kod;
-  cin >> kod;
-  return kod;
+  cout << "1-Kupno/0-Sprzedaż\n";
+  cin >> buy;
+  cout << "Podaj numer zwierzęcia, którego dotyczy operacja\n0-Królik ... 4-Koń 5-Mały Pies 6-Duży Pies\n";
+  
+  cin >> big;
+  if(big > 6 || big<0){
+		cout << "Zły numer zwierzęcia\n";
+		output = 0;
+		goto reset;
+		
+	}
+  cout << "Podaj 7 kolejnych liczb, oznaczających liczbę zwierząt z każdego rodzaju na wymianę\n";
+  cin >> rabbit >> sheep >> pig >> cow >> horse >> sDog >> bDog;
+  //cout << "Czy chcesz dokonać "
+	output += buy;
+	
+	output *= 8;
+	output = output+big;
+	
+	output *= 64;
+	output += rabbit;
+	
+	output *= 32;
+	output += sheep;
+
+	output *= 32;
+	output += pig;
+
+	output *= 16;
+	output += cow;
+
+	output *= 8;
+	output += horse;
+
+	output *= 8;
+	output += sDog;
+
+	output *= 4;
+	output += bDog;
+	if(rabbit > 60 || sheep > 24 || pig > 20 || cow > 12 || horse > 4 || sDog >4|| bDog>2){
+		cout << "Liczba zwierząt przekroczyła liczbę żetonów w grze\n";
+		output = 0;
+		goto reset;
+		
+	}
+  return output;
 }
 
 long long testowybot(int *Stado[5], int id)
@@ -430,7 +482,7 @@ int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - s�
   //srand(getpid() + time(NULL));
   string s;
   if(argc < 2)
-    s = "dane.csv";
+    s = "dane1.csv";
   else{
     s = argv[1];  
     s =s +".csv";
