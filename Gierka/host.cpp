@@ -306,7 +306,7 @@ static int* usadzGraczy(bool CzyCzlowiekGra)
   //Gracze są oznaczani jako wartości: 1 - człowiek, 2 - bot królikowy, 3 - bot randomizowany, 4 - bot Usain Bolt, 5 - bot świński
   int wykluczony = 1; //id gracza który nie weźmie udziału w danej rozgrywce, defaultowo człowiek
   if(CzyCzlowiekGra)
-    wykluczony = 2 + losuj()%4;
+    wykluczony = 2 + losowanko()%4;
   int cnt = 0;
   for(int i = 1; i <= 5; i++)
     if(i != wykluczony)
