@@ -281,11 +281,13 @@ static bool stadoPoRzucie(int *Stado[5], int id, int kostka1, int kostka2)
   bool czy_zmiana = false; //czy następuje zmiana w stadzie
   //transfer zwierząt z głównego stada w wyniku rozmnażania (z zachowaniem możliwości zasobnych głównego stada)
   for(int i = 0; i < 5; i++){
-    int x = Stado[id][i], y = Stado[0][i];
-    if(min((x + tab[i])/2, y) != 0)
-      czy_zmiana = true;
-    Stado[id][i] += min((x + tab[i])/2, y);
-    Stado[0][i] -= min((x + tab[i])/2, y);
+    if(tab[i] > 0){
+      int x = Stado[id][i], y = Stado[0][i];
+      if(min((x + tab[i])/2, y) != 0)
+        czy_zmiana = true;
+      Stado[id][i] += min((x + tab[i])/2, y);
+      Stado[0][i] -= min((x + tab[i])/2, y);
+    }
   }
   return czy_zmiana;
 }
