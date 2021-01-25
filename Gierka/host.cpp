@@ -56,7 +56,7 @@ long long dokonajWymiany(int *Stado[5], int id)
   cout << "Podaj kod wymiany.\n";
   cout << "1-Kupno/0-Sprzedaż\n";
   cin >> buy;
-  cout << "Podaj numer zwierzęcia, którego dotyczy operacja\n0-Królik ... 4-Koń 5-Mały Pies 6-Duży Pies\n";
+  cout << "Podaj numer zwierzęcia, którego dotyczy operacja\n0-Królik 1-Owca 2-Świnia 3-Krowa 4-Koń 5-Mały Pies 6-Duży Pies\n";
   
   cin >> big;
   if(big > 6 || big<0){
@@ -485,7 +485,7 @@ int main(int argc, char *argv[]) //w wersji release nie będzie tej funkcji - s�
     s = "./Dane/dane1.csv";
   else{
     s = argv[1];  
-    s ="./Dane/"s +".csv";
+    s ="./Dane/" + s +".csv";
   }
   rozpocznijGre(true, s);
 }
