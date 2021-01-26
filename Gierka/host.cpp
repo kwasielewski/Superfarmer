@@ -51,47 +51,48 @@ long long dokonajWymiany(int *Stado[5], int id)
   if(output==0){
   	return 0;
   }
-  output =0;
+  output = 1LL;
   int buy,  big,  rabbit,  sheep,  pig,  cow,  horse,  sDog, bDog;
   cout << "Podaj kod wymiany.\n";
   cout << "1-Kupno/0-Sprzedaż\n";
+  output <<= 1LL;
   cin >> buy;
   cout << "Podaj numer zwierzęcia, którego dotyczy operacja\n0-Królik 1-Owca 2-Świnia 3-Krowa 4-Koń 5-Mały Pies 6-Duży Pies\n";
   
   cin >> big;
   if(big > 6 || big<0){
 		cout << "Zły numer zwierzęcia\n";
-		output = 0;
+		output = 1LL;
 		goto reset;
 		
 	}
-  cout << "Podaj 7 kolejnych liczb, oznaczających liczbę zwierząt z każdego rodzaju na wymianę\n";
+  cout << "Podaj 7 kolejnych liczb oznaczających liczbę zwierząt z każdego rodzaju na wymianę\n";
   cin >> rabbit >> sheep >> pig >> cow >> horse >> sDog >> bDog;
   //cout << "Czy chcesz dokonać "
 	output += buy;
 	
-	output *= 8;
-	output = output+big;
-	
-	output *= 64;
+	output <<= 3LL;
+	output += big;
+
+	output <<= 6LL;
 	output += rabbit;
 	
-	output *= 32;
+	output <<= 5LL;
 	output += sheep;
 
-	output *= 32;
+	output <<= 5LL;
 	output += pig;
 
-	output *= 16;
+	output <<= 4LL;
 	output += cow;
 
-	output *= 8;
+	output <<= 3LL;
 	output += horse;
 
-	output *= 8;
+	output <<= 3LL;
 	output += sDog;
 
-	output *= 4;
+	output <<= 2LL;
 	output += bDog;
 	if(rabbit > 60 || sheep > 24 || pig > 20 || cow > 12 || horse > 4 || sDog >4|| bDog>2){
 		cout << "Liczba zwierząt przekroczyła liczbę żetonów w grze\n";
